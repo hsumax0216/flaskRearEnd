@@ -1,0 +1,25 @@
+
+dbtablename = "member"
+userPhone = "0981846772"
+userName = "徐浩恩"
+userNickname = "hsumax0216"
+userEmail = "b2626235@gmail.com"
+userAccount = "b2626235"
+userPassword = "allahu akbar"
+userImageURL = "www.youtube.com"
+
+db = pymysql.connect("localhost","root","admin","test" )
+cursor = db.cursor()
+sql = "INSERT INTO {} (PhoneNumber, Name, Nickname, Email, Account, Password, ImageURL) VALUES ( '{}', '{}', '{}', '{}', '{}', '{}', '{}')"\
+              .format(dbtablename,userPhone, userName, userNickname, userEmail, userAccount, userPassword, userImageURL)
+
+print(sql)
+try:
+   cursor.execute(sql)
+   db.commit()
+except Exception as e:
+	print(e)
+	print("db rollback") 
+	db.rollback()
+ 
+db.close()

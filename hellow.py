@@ -26,7 +26,7 @@ class member(db.Model):
 	ImageURL = db.Column(db.VARCHAR(255))
 	
 	def __repr__(self):
-		return '<member %r>' % self.name
+		return '<member %r %r>' % (self.ID, self.Name)
 
 class product(db.Model):
 	_tablename_ = 'product'
@@ -45,7 +45,7 @@ class product(db.Model):
 	Category = db.Column(db.VARCHAR(255),nullable=False)
 	
 	def __repr__(self):
-		return '<product %r>' % self.name
+		return '<product %r>' % self.ProductID
 
 class trade(db.Model):
 	_tablename_ = 'trade'
@@ -59,7 +59,7 @@ class trade(db.Model):
 	
 	
 	def __repr__(self):
-		return '<trade %r>' % self.name		
+		return '<trade %r>' % self.TradeID		
 
 class Surfedrecord(db.Model):
 	_tablename_ = 'Surfedrecord'
@@ -70,7 +70,7 @@ class Surfedrecord(db.Model):
 	
 	
 	def __repr__(self):
-		return '<Surfedrecord %r>' % self.name
+		return '<Surfedrecord %r %r>' % (self.UserID , self.ProductID)
 
 class Appointboard(db.Model):
 	_tablename_ = 'Appointboard'
@@ -80,7 +80,7 @@ class Appointboard(db.Model):
 	
 	
 	def __repr__(self):
-		return '<Appointboard %r>' % self.name
+		return '<Appointboard %r>' % self.Name
 
 class comment(db.Model):
 	_tablename_ = 'comment'
@@ -92,7 +92,7 @@ class comment(db.Model):
 	
 	
 	def __repr__(self):
-		return '<comment %r>' % self.name
+		return '<comment %r>' % self.Name
 
 class Bidding(db.Model):
 	_tablename_ = 'Bidding'
@@ -101,4 +101,4 @@ class Bidding(db.Model):
 	
 	
 	def __repr__(self):
-		return '<Bidding %r>' % self.name
+		return '<Bidding %r>' % self.Name
