@@ -9,7 +9,8 @@ import pymysql
 app = Flask(__name__)
 app.debug = True
 #app.config['SECRET_KEY'] = 'hard to guess string'
-app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://root:admin@127.0.0.1:3306/test"
+app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://root:admin@localhost:3306/test"
+#"mysql+pymysql://root:soselab401@140.121.197.131:3306/test"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True
 
 db = SQLAlchemy(app)
@@ -24,6 +25,9 @@ class member(db.Model):
 	Account = db.Column(db.CHAR(40),nullable=False)
 	Password = db.Column(db.CHAR(16),nullable=False)
 	ImageURL = db.Column(db.VARCHAR(255))
+	AvgEv = db.Column(db.FLOAT)
+	TotalEvCount = db.Column(db.Integer)
+	
 	
 	def __repr__(self):
 		return '<member %r %r>' % (self.ID, self.Name)
@@ -43,6 +47,8 @@ class product(db.Model):
 	BiddingTopUserID = db.Column(db.Integer)
 	Information = db.Column(db.Text(255))
 	Category = db.Column(db.VARCHAR(255),nullable=False)
+	AvgEv = db.Column(db.FLOAT)
+	TotalEvCount = db.Column(db.Integer)
 	
 	def __repr__(self):
 		return '<product %r>' % self.ProductID
@@ -52,19 +58,27 @@ class trade(db.Model):
 	TradeID = db.Column(db.Integer,nullable=False,primary_key=True,autoincrement=True)
 	SellerID = db.Column(db.Integer,db.ForeignKey('member.ID'),nullable=False,primary_key=True)
 	BuyerID = db.Column(db.Integer,db.ForeignKey('member.ID'))
-	ProductID = db.Column(db.Integer,db.ForeignKey('product.ProductID'))
+	ProductID = db.Column(db.Integer)
 	TradeAmount = db.Column(db.Integer)
 	TradePrice = db.Column(db.Integer)
 	CompletedType = db.Column(db.Boolean)
-	
-	
+	BuyerEvProduct = db.Column(db.FLOAT)
+	BuyerEvSeller = db.Column(db.FLOAT)
+	BuyerEvText = db.Column(db.Text(255))	
 	def __repr__(self):
 		return '<trade %r>' % self.TradeID		
 
 class Surfedrecord(db.Model):
 	_tablename_ = 'Surfedrecord'
 	UserID = db.Column(db.Integer,db.ForeignKey('member.ID'),nullable=False,primary_key=True)
-	ProductID = db.Column(db.Integer,db.ForeignKey('product.ProductID'),nullable=False,primary_key=True)
+	ProductID = db.Column(db.Integer,nullable=False,primary_key=True)
+	ProductName = db.Column(db.VARCHAR(255))
+	ImageURL = db.Column(db.VARCHAR(255))
+	Price = db.Column(db.Integer)
+	LowestPrice = db.Column(db.Integer)
+	BiddingPrice = db.Column(db.Integer)
+	BiddingUnitPrice = db.Column(db.Integer)
+	BiddingDeadline = db.Column(db.DateTime)
 	SurfingDate = db.Column(db.DateTime,nullable=False)
 	TimeToLeaveDate = db.Column(db.DateTime,nullable=False)
 	
@@ -89,7 +103,7 @@ class comment(db.Model):
 	ProductID = db.Column(db.Integer,db.ForeignKey('product.ProductID'),nullable=False)
 	Information = db.Column(db.Text(255))
 	CommentDatetime = db.Column(db.DateTime,nullable=False)
-	
+
 	
 	def __repr__(self):
 		return '<comment %r>' % self.Name
