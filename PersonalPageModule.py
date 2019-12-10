@@ -1,18 +1,27 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 import pymysql
 import datetime
 
 app = Flask(__name__)
 app.config["JSON_AS_ASCII"] = False
-@app.route("/")
+
+
+@app.route("/", methods = ['GET'])
 def home():
-    return "Hello Flask"
+    resjson = []
+    t = {
+            'state' : True
+            }
+    resjson
+    json = jsonify(t)
+    
+    return json
 
 
 ## 顯示個人介面
 ## 前端傳ID，後端根據ID 回傳json格式的member資料    
-    
-@app.route("/personalPage", methods = ['POST'])
+    #http://127.0.0.1:5000/
+@app.route("/personalPage", methods = ['GET','POST'])
 def personalPage():
     connect = pymysql.connect(host = "127.0.0.1", user = "root"
                           , password = "admin", db = "test")
@@ -118,6 +127,43 @@ LowestPrice, BiddingPrice, BiddingUnitPrice, BiddingDeadline, BiddingTopUserID, 
         SQLIns += "VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', NULL, NULL, NULL, NULL, NULL, '{5}', '{6}', '0', '0')"\
                     .format(sellerID, productName, imageURL, amount, price, information, category)
     print(SQLIns)
+    SQLIns2 = "SELECT AUTO_INCREMENT FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'test' AND TABLE_NAME = 'product'"
+    cursor.execute(SQLIns2)
+    data = cursor.fetchone()
+    productID = data[0]
+    try:
+       # 执行sql语句
+       if(cursor.execute(SQLIns)):
+           t = {
+               'state' : True,              # state 表示 是否成功                
+               'productID' : productID
+               }
+           connect.commit()
+           return jsonify(t)
+       else:
+           t = {
+               'state' : False              # state 表示 是否成功 
+               }
+           return jsonify(t)
+    except Exception as e:
+        #印出錯誤訊息
+        print(e)
+	   # 如果发生错误则回滚
+        connect.rollback()
+        print("DB rollback")       
+    connect.close()   
+
+# 編輯商品資訊
+    
+@app.route("/personalPage/onSale/edit", methods = ['POST'])
+def edit(): 
+    connect = pymysql.connect(host = "127.0.0.1", user = "root"
+                          , password = "admin", db = "test")
+    cursor = connect.cursor()
+    print(request.form)
+    productID = request.form['id']
+    information = request.form['information']
+    SQLIns = "UPDATE product SET Information = '{0}' WHERE ProductID = '{1}'".format(information, productID)
     try:
        # 执行sql语句
        if(cursor.execute(SQLIns)):
@@ -137,9 +183,40 @@ LowestPrice, BiddingPrice, BiddingUnitPrice, BiddingDeadline, BiddingTopUserID, 
 	   # 如果发生错误则回滚
         connect.rollback()
         print("DB rollback")       
-    connect.close()   
+    connect.close()       
     
-    
+# 刪除商品
+        
+@app.route("/personalPage/onSale/delete", methods = ['POST'])
+def delete(): 
+    connect = pymysql.connect(host = "127.0.0.1", user = "root"
+                          , password = "admin", db = "test")
+    cursor = connect.cursor()
+    print(request.form)
+    productID = request.form['id']    
+    SQLIns = "DELETE FROM product WHERE ProductID = '{0}'".format(productID)
+    try:
+       # 执行sql语句
+       if(cursor.execute(SQLIns)):
+           t = {
+               'state' : True,              # state 表示 是否成功                
+               }
+           connect.commit()
+           return jsonify(t)
+       else:
+           t = {
+               'state' : False              # state 表示 是否成功 
+               }
+           return jsonify(t)
+    except Exception as e:
+        #印出錯誤訊息
+        print(e)
+	   # 如果发生错误则回滚
+        connect.rollback()
+        print("DB rollback")       
+    connect.close()  
+
+# 顯示交易中商品
     
 @app.route("/personalPage/onTrade", methods = ['POST'])
 def onTrade():           
@@ -195,6 +272,8 @@ def onTrade():
         print("DB rollback")       
     connect.close()      
     
+# 交易完成
+    
 @app.route("/personalPage/onTrade/tradeCompleted", methods = ['POST'])
 def tradeCompelete():           
     connect = pymysql.connect(host = "127.0.0.1", user = "root"
@@ -235,8 +314,92 @@ def tradeCompelete():
     connect.close()
 
 @app.route("/personalPage/tradeRecord", methods = ['POST'])
-def tradeRecord():  
-
+def tradeRecord():
+    connect = pymysql.connect(host = "127.0.0.1", user = "root"
+                          , password = "admin", db = "test")    
+    cursor = connect.cursor()     
+    userID = request.form['id']
+    
+    print(request.form)
+    # 找出 交易紀錄中 所需要的資料， 條件設定為 賣家是該ID 且交易狀態是完成
+    SQLIns1 = "SELECT BuyerID,  productID, TradePrice, TradeAmount, BuyerEvProduct, BuyerEvSeller, BuyerEvText FROM trade  WHERE SellerID = '{0}' AND CompletedType = '1'"\
+                .format(userID)
+    # 找出 交易紀錄中 所需要的資料， 條件設定為 買家是該ID 且交易狀態是完成                
+    SQLIns2 = "SELECT SellerID,  productID, TradePrice, TradeAmount, BuyerEvProduct, BuyerEvSeller, BuyerEvText FROM trade  WHERE BuyerID = '{0}' AND CompletedType = '1'"\
+                .format(userID)
+    resJson = []
+    t = {}
+    try:
+        #執行SQL語句
+        cursor.execute(SQLIns1)
+        data1 = cursor.fetchall()
+        print(data1)
+        cursor.execute(SQLIns2)
+        data2 = cursor.fetchall()
+        print(data2)
+        for rows in data1:
+            SQLIns3 = "SELECT NickName FROM member WHERE ID = %(userID)s"
+            SQLIns4 = "SELECT ProductName FROM product WHERE ProductID = %(productID)s"
+            cursor.execute(SQLIns3, {'userID' : rows[0]})        
+            dataTmp1 = cursor.fetchone()
+            cursor.execute(SQLIns4, {'productID' : rows[1]})
+            dataTmp2 = cursor.fetchone()
+            t = {
+                    'Identity' : '0',        # 0 = 是賣家
+                    'Name' : dataTmp1[0],                    
+                    'ProductName' : dataTmp2[0],
+                    'TradePrice' : rows[2],
+                    'TradeAmount' : rows[3],
+                    'BuyerEvProduct' : rows[4],
+                    'BuyerEvSeller' : rows[5],
+                    'BuyerEvText' : rows[6]
+                    }
+            resJson.append(t)
+        for rows in data2:
+            SQLIns3 = "SELECT NickName FROM member WHERE ID = %(userID)s"
+            SQLIns4 = "SELECT ProductName FROM product WHERE ProductID = %(productID)s"
+            cursor.execute(SQLIns3, {'userID' : rows[0]})        
+            dataTmp1 = cursor.fetchone()
+            cursor.execute(SQLIns4, {'productID' : rows[1]})
+            dataTmp2 = cursor.fetchone()
+            t = {
+                    'Identity' : '1',        # 1 = 是買家
+                    'Name' : dataTmp1[0],                    
+                    'ProductName' : dataTmp2[0],
+                    'TradePrice' : rows[2],
+                    'TradeAmount' : rows[3],
+                    'BuyerEvProduct' : rows[4],
+                    'BuyerEvSeller' : rows[5],
+                    'BuyerEvText' : rows[6]
+                    }
+            resJson.append(t)
+        print(resJson)
+        return jsonify(resJson)
+    except Exception as e:
+        #印出錯誤訊息
+        print(e)
+	   # 錯誤回滾
+        connect.rollback()
+        print("DB rollback")       
+    connect.close()  
+    
+"""@app.route("/personalPage/surfedRecord", methods = ['POST'])
+def surfedRecord():
+    connect = pymysql.connect(host = "127.0.0.1", user = "root"
+                          , password = "admin", db = "test")    
+    cursor = connect.cursor()     
+    userID = request.form['id']
+    print(request.form)
+    SQLIns = ""
+    try:
+        
+    except Exception as e:
+        #印出錯誤訊息
+        print(e)
+	   # 如果发生错误则回滚
+        connect.rollback()
+        print("DB rollback")       
+    connect.close() """
        
 if (__name__ == "__main__") :
     app.run()
