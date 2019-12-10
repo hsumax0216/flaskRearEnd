@@ -21,14 +21,14 @@
 >> - [ ] POP3信箱認證
 
 ## 分工
-* [hsumax0216](https://github.com/hsumax0216)
+* [konohaDX](https://github.com/konohaDX)
   * **功能**
     * 登入
     * 註冊
     * 個人資訊
     * 競標上架/一般上架
 ## 
-* [hsumax0216](https://github.com/hsumax0216)
+* [delayshan](https://github.com/delayshan)
   * **功能**
     * 首頁
     * 搜尋/搜尋結果
