@@ -1,9 +1,12 @@
+'''
 import os
-from datetime import datetime
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+'''
+from . import db
+from datetime import datetime
 import pymysql
-
+'''
 #basedir = os.path.abspath(os.path.dirname(__file__))
 
 app = Flask(__name__)
@@ -14,7 +17,7 @@ app.config["SQLALCHEMY_DATABASE_URI"] = 'mysql+pymysql://root:admin@localhost:33
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True
 
 db = SQLAlchemy(app)
-
+'''
 class member(db.Model):
 	_tablename_='member'
 	ID = db.Column(db.Integer,nullable=False,primary_key=True,autoincrement=True)

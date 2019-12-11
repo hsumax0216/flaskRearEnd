@@ -21,7 +21,8 @@ script: true
   
  # Another command/method to run tests
 script: 
-  - python .py
+  - python flasky.py
+
  
 deploy:
   provider: heroku
