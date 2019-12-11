@@ -1,4 +1,5 @@
 # 海大拍賣系統flaskRearEnd
+[![Build Status](https://travis-ci.org/hsumax0216/flaskRearEnd.svg?branch=master)](https://travis-ci.org/hsumax0216/flaskRearEnd)
 > - [x] [首頁功能]
 >> - [x] 熱門商品功能
 >> - [x] 最新商品功能
