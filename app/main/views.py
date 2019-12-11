@@ -40,24 +40,24 @@ def homepage():
     cursor = connect.cursor()
     hottest=[]
     latest=[]
-    
+
     SQLIns = "SELECT * FROM product ORDER BY TotalEvCount ASC"
-    
+
     try:
    # 执行sql语句
        if(cursor.execute(SQLIns)):
-           
- 
-           
-           
-           for i in range (0,7):  
+
+
+
+
+           for i in range (0,7):
                data = cursor.fetchone()
                if(data is not None):
              #  print(data)
              #  print()
                    t = {
                        'state' : True ,
-                       'ProductID' : data[0],              # state 表示 是否成功 
+                       'ProductID' : data[0],              # state 表示 是否成功
                        'SellerID' : data[1],
                        'ProductName' : data[2],
                        'ImageURL' : data[3],
@@ -76,25 +76,25 @@ def homepage():
                    hottest.append(t)
                else:
                    t = {
-                       'state' : False              # state 表示 是否成功 
+                       'state' : False              # state 表示 是否成功
                        }
                    return jsonify(t)
     except Exception as e:
     	   # 如果发生错误则回滚
            print(e)
-           connect.rollback()     
+           connect.rollback()
     SQLIns = "SELECT * FROM product ORDER BY ProductID DESC"
-    
+
     try:
    # 执行sql语句
        if(cursor.execute(SQLIns)):
-           for i in range (0,7):  
+           for i in range (0,7):
                data = cursor.fetchone()
                if(data is not None):
                    print(data)
                    t = {
                        'state' : True ,
-                       'ProductID' : data[0],              # state 表示 是否成功 
+                       'ProductID' : data[0],              # state 表示 是否成功
                        'SellerID' : data[1],
                        'ProductName' : data[2],
                        'ImageURL' : data[3],
@@ -113,13 +113,13 @@ def homepage():
                    latest.append(t)
        else:
            t = {
-               'state' : False              # state 表示 是否成功 
+               'state' : False              # state 表示 是否成功
                }
            return jsonify(t)
     except Exception as e:
     	   # 如果发生错误则回滚
            print(e)
-           connect.rollback() 
+           connect.rollback()
     return jsonify(hottest,latest)
 
 @main.route("/product_Category/<Category>", methods = ['GET'])
@@ -133,15 +133,15 @@ def ProductCategory(Category):
        # 执行sql语句
        if(cursor.execute(SQLIns)):
            data = cursor.fetchone()
- 
+
            ans=[]
-           
-           while data is not None:    
+
+           while data is not None:
              #  print(data)
              #  print()
                t = {
                    'state' : True ,
-                   'ProductID' : data[0],              # state 表示 是否成功 
+                   'ProductID' : data[0],              # state 表示 是否成功
                    'SellerID' : data[1],
                    'ProductName' : data[2],
                    'ImageURL' : data[3],
@@ -162,13 +162,13 @@ def ProductCategory(Category):
            return jsonify(ans)
        else:
            t = {
-               'state' : False              # state 表示 是否成功 
+               'state' : False              # state 表示 是否成功
                }
            return jsonify(t)
     except Exception as e:
 	   # 如果发生错误则回滚
        print(e)
-       connect.rollback()     
+       connect.rollback()
     connect.close()
 
 @main.route("/signUp", methods = ['GET'])
@@ -184,34 +184,34 @@ def signUp():
     userNickname = request.args.get("Id")           #暱稱
     userEmail = request.args.get("Email")           #信箱
     userAccount = request.args.get("Account")       #帳號
-    userPassword = request.args.get("Password")     #密碼    
+    userPassword = request.args.get("Password")     #密碼
 
      # 寫入database
     SQLIns = "INSERT INTO MEMBER (PhoneNumber, Name, NickName, Email, Account, Password, ImageURL, AvgEv, TotalEvCount) VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', NULL, '0', '0')"\
-                  .format(userPhone, userName, userNickname, userEmail, userAccount, userPassword)                
+                  .format(userPhone, userName, userNickname, userEmail, userAccount, userPassword)
     try:
        # 执行sql语句
        if(cursor.execute(SQLIns)):
            t = {
-                   'state' : True              # state 表示 是否成功 
+                   'state' : True              # state 表示 是否成功
                    }
            # 提交到数据库执行
            connect.commit()
            return jsonify(t)
        else:
            t = {
-                   'state' : False              # state 表示 是否成功 
+                   'state' : False              # state 表示 是否成功
                    }
            # 提交到数据库执行
            connect.commit()
-           return jsonify(t)		   
+           return jsonify(t)
     except Exception as e:
     #印出錯誤訊息
         print(e)
 	# 錯誤回滾
         connect.rollback()
-        print("DB rollback")       
-    connect.close() 
+        print("DB rollback")
+    connect.close()
 
 ## 登入
 
@@ -220,19 +220,19 @@ def signIn():
     connect = pymysql.connect(host = "140.121.197.131", user = "root"
                           , password = "soselab401", db = "test")
     cursor = connect.cursor()
-    if request.method == 'POST': 
+    if request.method == 'POST':
     # POST 格式
         userAccount = request.form['account']   # 登入帳號
         userPassword = request.form['password'] # 登入密碼
-    
-    
+
+
         SQLIns = "SELECT * FROM MEMBER WHERE Account = '{0}' AND Password = '{1}' ".format(userAccount, userPassword)
         try:
        # 執行sql语句
            if(cursor.execute(SQLIns)):
                data = cursor.fetchone()
                t = {
-                       'state' : True,              # state 表示 是否成功 
+                       'state' : True,              # state 表示 是否成功
                        'ID' : data[0],              # 回傳登入者的userID
                        'PhoneNumber' : data[1],     # 回傳登入者的手機
                        'Name' : data[2],            # 回傳登入者姓名
@@ -245,7 +245,7 @@ def signIn():
                return jsonify(t)
            else:
                t = {
-                       'state' : False               # state 表示 是否成功 
+                       'state' : False               # state 表示 是否成功
                        }
                return jsonify(t)
         except Exception as e:
@@ -253,13 +253,13 @@ def signIn():
             print(e)
 	   # 錯誤回滾
             connect.rollback()
-            print("DB rollback")       
-    connect.close() 
+            print("DB rollback")
+    connect.close()
     return 'signIn Page...'
 
 
 ## 顯示個人介面
-## 前端傳ID，後端根據ID 回傳json格式的member資料    
+## 前端傳ID，後端根據ID 回傳json格式的member資料
     #http://127.0.0.1:5000/
 @main.route("/personalPage", methods = ['POST'])
 def personalPage():
@@ -273,7 +273,7 @@ def personalPage():
        if(cursor.execute(SQLIns)):
            data = cursor.fetchone()
            t = {
-               'state' : True,              # state 表示 是否成功 
+               'state' : True,              # state 表示 是否成功
                'ID' : data[0],
                'PhoneNumber' : data[1],
                'Name' : data[2],
@@ -286,13 +286,13 @@ def personalPage():
            return jsonify(t)
        else:
            t = {
-               'state' : False              # state 表示 是否成功 
+               'state' : False              # state 表示 是否成功
                }
            return jsonify(t)
     except:
 	   # 如果发生错误则回滚
        connect.rollback()
-       print("DB rollback")       
+       print("DB rollback")
     connect.close()
     return 'personal Page...'
 
@@ -311,21 +311,21 @@ def onSale():
            data = cursor.fetchall()
            resJson = []
            t = {}
-           for rows in data:                   
-               t  =  {       
-                        'state' : True,                            
-                        'ProductName' : rows[0],                                                   
+           for rows in data:
+               t  =  {
+                        'state' : True,
+                        'ProductName' : rows[0],
                         'Price' :    rows[1],
                         'LowestPrice' : rows[2],
                         'BiddingPrice' : rows[3],
                         'BiddingUnitPrice' : rows[4],
-                        'BiddingDeadLine' : rows[5]                                                            
-                    }       
-               resJson.append(t)                                         
+                        'BiddingDeadLine' : rows[5]
+                    }
+               resJson.append(t)
            return jsonify(resJson)
        else:
            t = {
-               'state' : False              # state 表示 是否成功 
+               'state' : False              # state 表示 是否成功
                }
            return jsonify(t)
     except Exception as e:
@@ -333,8 +333,8 @@ def onSale():
         print(e)
 	   # 如果发生错误则回滚
         connect.rollback()
-        print("DB rollback")       
-    connect.close()  
+        print("DB rollback")
+    connect.close()
     return 'personalPage onSale...'
 
 
@@ -378,14 +378,14 @@ def sale():
        # 执行sql语句
        if(cursor.execute(SQLIns)):
            t = {
-               'state' : True,              # state 表示 是否成功                
+               'state' : True,              # state 表示 是否成功
                'productID' : productID
                }
            connect.commit()
            return jsonify(t)
        else:
            t = {
-               'state' : False              # state 表示 是否成功 
+               'state' : False              # state 表示 是否成功
                }
            return jsonify(t)
     except Exception as e:
@@ -393,14 +393,14 @@ def sale():
         print(e)
 	   # 如果发生错误则回滚
         connect.rollback()
-        print("DB rollback")       
+        print("DB rollback")
     connect.close()
     return 'personalPage onSale sale page...'
 
 # 編輯商品資訊
-    
+
 @main.route("/personalPage/onSale/edit", methods = ['POST'])
-def edit(): 
+def edit():
     connect = pymysql.connect(host = "140.121.197.131", user = "root"
                           , password = "soselab401", db = "test")
     cursor = connect.cursor()
@@ -412,13 +412,13 @@ def edit():
        # 执行sql语句
        if(cursor.execute(SQLIns)):
            t = {
-               'state' : True,              # state 表示 是否成功                
+               'state' : True,              # state 表示 是否成功
                }
            connect.commit()
            return jsonify(t)
        else:
            t = {
-               'state' : False              # state 表示 是否成功 
+               'state' : False              # state 表示 是否成功
                }
            return jsonify(t)
     except Exception as e:
@@ -426,31 +426,31 @@ def edit():
         print(e)
 	   # 如果发生错误则回滚
         connect.rollback()
-        print("DB rollback")       
+        print("DB rollback")
     connect.close()
     return 'personalPage onSale sale edit...'
-    
+
 # 刪除商品
-        
+
 @main.route("/personalPage/onSale/delete", methods = ['POST'])
-def delete(): 
+def delete():
     connect = pymysql.connect(host = "140.121.197.131", user = "root"
                           , password = "soselab401", db = "test")
     cursor = connect.cursor()
     print(request.form)
-    productID = request.form['ID']    
+    productID = request.form['ID']
     SQLIns = "DELETE FROM product WHERE ProductID = '{0}'".format(productID)
     try:
        # 执行sql语句
        if(cursor.execute(SQLIns)):
            t = {
-               'state' : True,              # state 表示 是否成功                
+               'state' : True,              # state 表示 是否成功
                }
            connect.commit()
            return jsonify(t)
        else:
            t = {
-               'state' : False              # state 表示 是否成功 
+               'state' : False              # state 表示 是否成功
                }
            return jsonify(t)
     except Exception as e:
@@ -458,15 +458,15 @@ def delete():
         print(e)
 	   # 如果发生错误则回滚
         connect.rollback()
-        print("DB rollback")       
+        print("DB rollback")
     connect.close()
     return 'personalPage onSale sale delete...'
-	
+
 
 # 顯示交易中商品
-    
+
 @main.route("/personalPage/onTrade", methods = ['POST'])
-def onTrade():           
+def onTrade():
     connect = pymysql.connect(host = "140.121.197.131", user = "root"
                           , password = "soselab401", db = "test")
     cursor = connect.cursor()
@@ -487,48 +487,48 @@ def onTrade():
        data2 = cursor.fetchall()
        if(data1 != ()):
            for rows in data1:
-               t = {                  
-                   'state' : True,                        
+               t = {
+                   'state' : True,
                    'TradeID' : rows[0],
                    'ProductName' : rows[1],
                    'TradeAmount' : rows[2],
-                   'TradePrice' : rows[3],                                                          
+                   'TradePrice' : rows[3],
                    'Identity' : '0'         # 0 = 是賣家
                    }
                resJson.append(t)
        if(data2 != ()):
            for rows in data2:
                t = {
-                   'state' : True, 
+                   'state' : True,
                    'TradeID' : rows[0],
                    'ProductName' : rows[0],
                    'TradeAmount' : rows[1],
-                   'TradePrice' : rows[2],                                                          
+                   'TradePrice' : rows[2],
                    'Identity' : '1'         # 1 = 是買家
                    }
-               resJson.append(t)               
+               resJson.append(t)
            return jsonify(resJson)
        if(data1 == () and data2 == ()):
            t = {
-               'state' : False              # state 表示 是否成功 
-               }           
+               'state' : False              # state 表示 是否成功
+               }
            return jsonify(t)
     except Exception as e:
         #印出錯誤訊息
         print(e)
 	   # 如果发生错误则回滚
         connect.rollback()
-        print("DB rollback")       
+        print("DB rollback")
     connect.close()
     return 'personalPage onTrade...'
-    
+
 # 交易完成
-    
+
 @main.route("/personalPage/onTrade/tradeCompleted", methods = ['POST'])
-def tradeCompelete():           
+def tradeCompelete():
     connect = pymysql.connect(host = "140.121.197.131", user = "root"
                           , password = "soselab401", db = "test")
-    cursor = connect.cursor()        
+    cursor = connect.cursor()
     print(request.form)
     tradeID = request.form['ID']
     productEv = request.form['ProductEv']
@@ -542,10 +542,10 @@ def tradeCompelete():
         sellerID = data[0]
         productID = data[1]
         SQLIns2 = "UPDATE trade SET CompletedType = '1', BuyerEvProduct = '{0}', BuyerEvSeller = '{1}', BuyerEvText = '{2}' WHERE TradeID = '{3}'"\
-                    .format(productEv, memberEv, evText, tradeID)  
+                    .format(productEv, memberEv, evText, tradeID)
         cursor.execute(SQLIns2)
         SQLIns3 = "UPDATE member SET AvgEv = ((AvgEv * TotalEvCount) + '{0}') / (TotalEvCount + 1), TotalEvCount = TotalEvCount + 1 WHERE ID = '{1}'"\
-                    .format(memberEv, sellerID)                
+                    .format(memberEv, sellerID)
         cursor.execute(SQLIns3)
         SQLIns4 = "UPDATE product SET AvgEv = ((AvgEv * TotalEvCount) + '{0}') / (TotalEvCount + 1), TotalEvCount = TotalEvCount + 1 WHERE ProductID = '{1}'"\
                     .format(productEv, productID)
@@ -554,13 +554,13 @@ def tradeCompelete():
         t = {
                 'state' : True
                 }
-        return jsonify(t)       
+        return jsonify(t)
     except Exception as e:
         #印出錯誤訊息
         print(e)
 	   # 如果发生错误则回滚
         connect.rollback()
-        print("DB rollback")       
+        print("DB rollback")
     connect.close()
     return 'personalPage onTrade tradeCompleted...'
 
@@ -569,15 +569,15 @@ def tradeCompelete():
 @main.route("/personalPage/tradeRecord", methods = ['POST'])
 def tradeRecord():
     connect = pymysql.connect(host = "140.121.197.131", user = "root"
-                          , password = "soselab401", db = "test")   
-    cursor = connect.cursor()     
+                          , password = "soselab401", db = "test")
+    cursor = connect.cursor()
     userID = request.form['ID']
-    
+
     print(request.form)
     # 找出 交易紀錄中 所需要的資料， 條件設定為 賣家是該ID 且交易狀態是完成
     SQLIns1 = "SELECT BuyerID,  productID, TradePrice, TradeAmount, BuyerEvProduct, BuyerEvSeller, BuyerEvText FROM trade  WHERE SellerID = '{0}' AND CompletedType = '1'"\
                 .format(userID)
-    # 找出 交易紀錄中 所需要的資料， 條件設定為 買家是該ID 且交易狀態是完成                
+    # 找出 交易紀錄中 所需要的資料， 條件設定為 買家是該ID 且交易狀態是完成
     SQLIns2 = "SELECT SellerID,  productID, TradePrice, TradeAmount, BuyerEvProduct, BuyerEvSeller, BuyerEvText FROM trade  WHERE BuyerID = '{0}' AND CompletedType = '1'"\
                 .format(userID)
     resJson = []
@@ -593,14 +593,14 @@ def tradeRecord():
         for rows in data1:
             SQLIns3 = "SELECT NickName FROM member WHERE ID = %(userID)s"
             SQLIns4 = "SELECT ProductName FROM product WHERE ProductID = %(productID)s"
-            cursor.execute(SQLIns3, {'userID' : rows[0]})        
+            cursor.execute(SQLIns3, {'userID' : rows[0]})
             dataTmp1 = cursor.fetchone()
             cursor.execute(SQLIns4, {'productID' : rows[1]})
             dataTmp2 = cursor.fetchone()
             t = {
-                    'state' : True, 
+                    'state' : True,
                     'Identity' : '0',        # 0 = 是賣家
-                    'Name' : dataTmp1[0],                    
+                    'Name' : dataTmp1[0],
                     'ProductName' : dataTmp2[0],
                     'TradePrice' : rows[2],
                     'TradeAmount' : rows[3],
@@ -612,14 +612,14 @@ def tradeRecord():
         for rows in data2:
             SQLIns3 = "SELECT NickName FROM member WHERE ID = %(userID)s"
             SQLIns4 = "SELECT ProductName FROM product WHERE ProductID = %(productID)s"
-            cursor.execute(SQLIns3, {'userID' : rows[0]})        
+            cursor.execute(SQLIns3, {'userID' : rows[0]})
             dataTmp1 = cursor.fetchone()
             cursor.execute(SQLIns4, {'productID' : rows[1]})
             dataTmp2 = cursor.fetchone()
             t = {
-                    'state' : True, 
+                    'state' : True,
                     'Identity' : '1',        # 1 = 是買家
-                    'Name' : dataTmp1[0],                    
+                    'Name' : dataTmp1[0],
                     'ProductName' : dataTmp2[0],
                     'TradePrice' : rows[2],
                     'TradeAmount' : rows[3],
@@ -635,17 +635,17 @@ def tradeRecord():
         print(e)
 	   # 錯誤回滾
         connect.rollback()
-        print("DB rollback")       
+        print("DB rollback")
     connect.close()
     return 'personalPage tradeRecord...'
 
-# 瀏覽紀錄    
-    
+# 瀏覽紀錄
+
 @main.route("/personalPage/surfedRecord", methods = ['POST'])
 def surfedRecord():
     connect = pymysql.connect(host = "140.121.197.131", user = "root"
-                          , password = "soselab401", db = "test")    
-    cursor = connect.cursor()     
+                          , password = "soselab401", db = "test")
+    cursor = connect.cursor()
     userID = request.form['ID']
     print(request.form)
     SQLIns = "SELECT * FROM surfedrecord WHERE UserID = '{0}'".format(userID)
@@ -669,33 +669,33 @@ def surfedRecord():
                         'SurfingDate' : rows[9]
                         }
                 resJson.append(t)
-            return jsonify(resJson)    
+            return jsonify(resJson)
         else:
             t = {
                     'state' : False
                     }
             return jsonify(t)
-        
+
     except Exception as e:
         #印出錯誤訊息
         print(e)
 	   # 如果发生错误则回滚
         connect.rollback()
-        print("DB rollback")       
+        print("DB rollback")
     connect.close()
     return 'personalPage surfedRecord...'
-    
+
 # 顯示預約版
-    
+
 @main.route("/personalPage/reservation" , methods = ['POST'])
 def reservation():
     connect = pymysql.connect(host = "140.121.197.131", user = "root"
                           , password = "soselab401", db = "test")    #soselab401
-    cursor = connect.cursor()     
+    cursor = connect.cursor()
     userID = request.form['ID']
     print(request.form)
-    SQLIns = "SELECT * FROM appointboard WHERE SellerID = '{0}' OR BuyerID = '{0}'".format(userID) 
-    
+    SQLIns = "SELECT * FROM appointboard WHERE SellerID = '{0}' OR BuyerID = '{0}'".format(userID)
+
     resJson = []
     t = {}
     try :
@@ -706,19 +706,19 @@ def reservation():
                 SQLIns2 = "SELECT Information FROM comment WHERE TradeID =  %(tID)s"
                 cursor.execute(SQLIns2, {'tID' : rows[0]})
                 dataComment = cursor.fetchall()
-                               
+
                 SQLIns3 = "SELECT NickName FROM member WHERE ID = %(sID)s"
                 cursor.execute(SQLIns3, {'sID' : rows[1]})
                 dataSellerNickName = cursor.fetchone()
-                
+
                 SQLIns4 = "SELECT NickName FROM member WHERE ID = %(bID)s"
                 cursor.execute(SQLIns4, {'bID' : rows[2]})
                 dataBuyerNickName = cursor.fetchone()
-                
+
                 SQLIns5 = "SELECT ProductName, ImageURL FROM product WHERE ProductID = %(pID)s"
                 cursor.execute(SQLIns5, {'pID' : rows[3]} )
                 dataProduct = cursor.fetchone()
-                
+
                 print(rows)
                 t = {
                         'state' : True,
@@ -731,20 +731,20 @@ def reservation():
                         'ProductImg' : dataProduct[1]
                         }
                 resJson.append(t)
-        return jsonify(resJson)       
+        return jsonify(resJson)
     except Exception as e:
         #印出錯誤訊息
         print(e)
 	   # 如果发生错误则回滚
         connect.rollback()
-        print("DB rollback")            
+        print("DB rollback")
     connect.close()
     return 'personalPage reservation...'
-    
-#預約留言    
-    
+
+#預約留言
+
 @main.route("/personalPage/reservation/comment" , methods = ['POST'])
-def reservationComment():   
+def reservationComment():
     connect = pymysql.connect(host = "140.121.197.131", user = "root"
                           , password = "soselab401", db = "test")    #soselab401
     cursor = connect.cursor()
@@ -768,7 +768,7 @@ def reservationComment():
         print(e)
 	   # 如果发生错误则回滚
         connect.rollback()
-        print("DB rollback")            
+        print("DB rollback")
     connect.close()
     return 'personalPage reservation comment...'
 
@@ -819,7 +819,7 @@ def CheckOutPage():#dict={'key':'value'}#list=[value]#value=every type
 					try:
 						db.session.add(Trade)
 						#提交DB
-						db.session.commit()					
+						db.session.commit()
 						db.session.refresh(Trade,['TradeID'])
 						tradeidtemp = Trade.TradeID
 						print('Trade.TradeID:'+str(tradeidtemp))
@@ -829,9 +829,9 @@ def CheckOutPage():#dict={'key':'value'}#list=[value]#value=every type
 							BuyerID = buyer.ID,\
 							ProductID = Product.ProductID,\
 							BoughtDate = datetime.datetime.now()
-							)					
+							)
 						db.session.add(Appboard)
-						db.session.commit()	
+						db.session.commit()
 					except Exception as e:
 						print(e)
 						#state = 0表示 出現錯誤
@@ -846,7 +846,7 @@ def CheckOutPage():#dict={'key':'value'}#list=[value]#value=every type
 			else:
 				t['state'] = 0
 				errorProduct.append(int(prID))
-		
+
 		if(len(errorProduct) != 0):
 			t['ProductID'] = errorProduct
 			err = "ProductID: "
@@ -869,7 +869,7 @@ def ProductSearch():
     lowerPrice =request.args.get('firstPrice',0)
     higherPrice =request.args.get('lastPrice',sys.maxsize)
     productEv =request.args.get('商品星級',0)
-    
+
     SQLIns = "SELECT * FROM product WHERE ProductName  LIKE '%{0}%' AND AvgEv >={1} AND  (Price BETWEEN {2} AND {3} OR BiddingPrice BETWEEN {4} AND {5}) "\
     .format(productName,productEv,lowerPrice,higherPrice,lowerPrice,higherPrice)
 
@@ -877,15 +877,15 @@ def ProductSearch():
        # 执行sql语句
        if(cursor.execute(SQLIns)):
            data = cursor.fetchone()
-           
+
            ans=[]
-           
-           while data is not None:    
+
+           while data is not None:
              #  print(data)
              #  print()
                t = {
                    'state' : True ,
-                   'ProductID' : data[0],              # state 表示 是否成功 
+                   'ProductID' : data[0],              # state 表示 是否成功
                    'SellerID' : data[1],
                    'ProductName' : data[2],
                    'ImageURL' : data[3],
@@ -906,16 +906,16 @@ def ProductSearch():
            return jsonify(ans)
        else:
            t = {
-               'state' : False              # state 表示 是否成功 
+               'state' : False              # state 表示 是否成功
                }
            return jsonify(t)
     except Exception as e:
 	   # 如果发生错误则回滚
        print(e)
-       connect.rollback()     
+       connect.rollback()
     connect.close()
     return 'product_searching...'
-    
+
 @main.route("/product_information/<ProductID>", methods = ['GET'])
 def ProductInfo(ProductID):
     connect = pymysql.connect(host = "140.121.197.131", user = "root"
@@ -927,15 +927,15 @@ def ProductInfo(ProductID):
        # 执行sql语句
        if(cursor.execute(SQLIns)):
            data = cursor.fetchone()
- 
+
            ans=[]
-           
-           while data is not None:    
+
+           while data is not None:
              #  print(data)
              #  print()
                t = {
                    'state' : True ,
-                   'ProductID' : data[0],              # state 表示 是否成功 
+                   'ProductID' : data[0],              # state 表示 是否成功
                    'SellerID' : data[1],
                    'ProductName' : data[2],
                    'ImageURL' : data[3],
@@ -956,12 +956,12 @@ def ProductInfo(ProductID):
            return jsonify(ans)
        else:
            t = {
-               'state' : False              # state 表示 是否成功 
+               'state' : False              # state 表示 是否成功
                }
            return jsonify(t)
     except Exception as e:
 	   # 如果发生错误则回滚
        print(e)
-       connect.rollback()     
+       connect.rollback()
     connect.close()
     return 'product_information ProductID={}...'.format(ProductID)
