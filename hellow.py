@@ -89,6 +89,9 @@ class Surfedrecord(db.Model):
 class Appointboard(db.Model):
 	_tablename_ = 'Appointboard'
 	TradeID = db.Column(db.Integer,db.ForeignKey('trade.TradeID'),nullable=False,primary_key=True)
+	SellerID = db.Column(db.Integer,nullable=False)
+	BuyerID = db.Column(db.Integer,nullable=False)
+	ProductID = db.Column(db.Integer,nullable=False)
 	AppointDate = db.Column(db.DateTime)
 	BoughtDate = db.Column(db.DateTime,nullable=False)
 	
