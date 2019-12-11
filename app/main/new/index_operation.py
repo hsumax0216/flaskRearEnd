@@ -6,7 +6,7 @@ app.config["JSON_AS_ASCII"]=False
 
 
 @app.route("/index", methods = ['GET'])
-def homepage(PageState):
+def homepage():
     connect = pymysql.connect(host = "140.121.197.131", user = "root"
                           , password = "soselab401", db = "test")
     cursor = connect.cursor()
