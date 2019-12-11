@@ -1,14 +1,16 @@
-from flask import render_template, session, redirect, url_for, current_app,request, jsonify
-from flask_sqlalchemy import SQLAlchemy
-import pymysql
-import sys
-import datetime
-from .. import db
-from ..models import member, product, trade, Surfedrecord, Appointboard, comment, Bidding
+#from flask import render_template, session, redirect, url_for, current_app,request, jsonify
+#from flask_sqlalchemy import SQLAlchemy
+#import pymysql
+#import sys
+#import datetime
+#from .. import db
+#from ..models import member, product, trade, Surfedrecord, Appointboard, comment, Bidding
 #from ..email import send_email
-from . import main
+#from . import main
 #from .forms import NameForm
-
+from .new import index_operation,product_searching,personal_page,buyingForm\
+	,member_management,product_information
+	
 '''
 @main.route('/', methods=['GET', 'POST'])
 def index():
@@ -32,7 +34,7 @@ def index():
                            known=session.get('known', False))
 '''
 
-
+'''
 @main.route("/index", methods = ['GET'])
 def homepage():
     connect = pymysql.connect(host = "140.121.197.131", user = "root"
@@ -170,7 +172,8 @@ def ProductCategory(Category):
        print(e)
        connect.rollback()
     connect.close()
-
+'''
+'''
 @main.route("/signUp", methods = ['GET'])
 def signUp():
 
@@ -256,8 +259,8 @@ def signIn():
             print("DB rollback")
     connect.close()
     return 'signIn Page...'
-
-
+'''
+'''
 ## 顯示個人介面
 ## 前端傳ID，後端根據ID 回傳json格式的member資料
     #http://127.0.0.1:5000/
@@ -771,7 +774,8 @@ def reservationComment():
         print("DB rollback")
     connect.close()
     return 'personalPage reservation comment...'
-
+'''
+'''
 @main.route("/CheckOutPage", methods = ['GET','POST'])#CheckOutPage為暫定url
 def CheckOutPage():#dict={'key':'value'}#list=[value]#value=every type
 	if(request.method == 'POST'):
@@ -859,7 +863,8 @@ def CheckOutPage():#dict={'key':'value'}#list=[value]#value=every type
 		return jsonify(t)
 	if(request.method == 'GET'):
 		return 'CheckOutPage.html...'
-
+'''
+'''
 @main.route("/product_searching", methods = ['GET'])
 def ProductSearch():
     connect = pymysql.connect(host = "140.121.197.131", user = "root"
@@ -915,7 +920,8 @@ def ProductSearch():
        connect.rollback()
     connect.close()
     return 'product_searching...'
-
+'''
+'''
 @main.route("/product_information/<ProductID>", methods = ['GET'])
 def ProductInfo(ProductID):
     connect = pymysql.connect(host = "140.121.197.131", user = "root"
@@ -965,3 +971,4 @@ def ProductInfo(ProductID):
        connect.rollback()
     connect.close()
     return 'product_information ProductID={}...'.format(ProductID)
+	'''

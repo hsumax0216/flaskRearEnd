@@ -1,10 +1,13 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
-from hellow import app,db,member,product,trade,Appointboard#,Bidding
+from ... import db
+from .. import main
+from ...models import member, product, trade, Appointboard
+#from hellow import app,db,member,product,trade,Appointboard
 #app,db一定要import
 import datetime
 import pymysql
-@app.route("/CheckOutPage", methods = ['GET','POST'])#CheckOutPage為暫定url
+@main.route("/CheckOutPage", methods = ['GET','POST'])#CheckOutPage為暫定url
 def CheckOutPage():#dict={'key':'value'}#list=[value]#value=every type
 	if(request.method == 'POST'):
 		member_id = request.form['member_id']

@@ -1,15 +1,12 @@
 from flask import Flask, request, jsonify
 import pymysql
 import datetime
-
-app = Flask(__name__)
-app.config["JSON_AS_ASCII"] = False
-
+from .. import main
 
 ## 顯示個人介面
 ## 前端傳ID，後端根據ID 回傳json格式的member資料    
     #http://127.0.0.1:5000/
-@app.route("/personalPage", methods = ['GET','POST'])
+@main.route("/personalPage", methods = ['GET','POST'])
 def personalPage():
     
     connect = pymysql.connect(host = "140.121.197.131", user = "root"
@@ -44,10 +41,11 @@ def personalPage():
             connect.rollback()
             print("DB rollback")       
     connect.close()
+    return 'personal Page...'
 
 # 顯示上架商品
 
-@app.route("/personalPage/onSale", methods = ['GET','POST'])
+@main.route("/personalPage/onSale", methods = ['GET','POST'])
 def onSale():
     connect = pymysql.connect(host = "140.121.197.131", user = "root"
                           , password = "soselab401", db = "test")
@@ -85,11 +83,12 @@ def onSale():
             connect.rollback()
             print("DB rollback")       
     connect.close()  
+    return 'personalPage onSale...'
 
 
 #上架商品
 
-@app.route("/personalPage/onSale/sale", methods = ['GET','POST'])
+@main.route("/personalPage/onSale/sale", methods = ['GET','POST'])
 def sale():
     connect = pymysql.connect(host = "140.121.197.131", user = "root"
                           , password = "soselab401", db = "test")
@@ -144,10 +143,11 @@ LowestPrice, BiddingPrice, BiddingUnitPrice, BiddingDeadline, BiddingTopUserID, 
           connect.rollback()
           print("DB rollback")       
     connect.close()   
+    return 'personalPage onSale sale page...'
 
 # 編輯商品資訊
     
-@app.route("/personalPage/onSale/edit", methods = ['GET','POST'])
+@main.route("/personalPage/onSale/edit", methods = ['GET','POST'])
 def edit(): 
     connect = pymysql.connect(host = "140.121.197.131", user = "root"
                           , password = "soselab401", db = "test")
@@ -176,11 +176,12 @@ def edit():
 	       # 如果发生错误则回滚
            connect.rollback()
            print("DB rollback")       
-    connect.close()       
+    connect.close()
+    return 'personalPage onSale sale edit...'
     
 # 刪除商品
         
-@app.route("/personalPage/onSale/delete", methods = ['GET','POST'])
+@main.route("/personalPage/onSale/delete", methods = ['GET','POST'])
 def delete(): 
     connect = pymysql.connect(host = "140.121.197.131", user = "root"
                           , password = "soselab401", db = "test")
@@ -207,11 +208,12 @@ def delete():
 	   # 如果发生错误则回滚
             connect.rollback()
             print("DB rollback")       
-    connect.close()  
+    connect.close()
+    return 'personalPage onSale sale delete...'
 
 # 顯示交易中商品
     
-@app.route("/personalPage/onTrade", methods = ['GET','POST'])
+@main.route("/personalPage/onTrade", methods = ['GET','POST'])
 def onTrade():           
     connect = pymysql.connect(host = "140.121.197.131", user = "root"
                           , password = "soselab401", db = "test")
@@ -266,10 +268,11 @@ def onTrade():
             connect.rollback()
             print("DB rollback")       
     connect.close()      
+    return 'personalPage onTrade...'
     
 # 交易完成
     
-@app.route("/personalPage/onTrade/tradeCompleted", methods = ['GET','POST'])
+@main.route("/personalPage/onTrade/tradeCompleted", methods = ['GET','POST'])
 def tradeCompelete():           
     connect = pymysql.connect(host = "140.121.197.131", user = "root"
                           , password = "soselab401", db = "test")
@@ -307,10 +310,11 @@ def tradeCompelete():
             connect.rollback()
             print("DB rollback")       
     connect.close()
+    return 'personalPage onTrade tradeCompleted...'
 
 #交易紀錄
 
-@app.route("/personalPage/tradeRecord", methods = ['GET','POST'])
+@main.route("/personalPage/tradeRecord", methods = ['GET','POST'])
 def tradeRecord():
     connect = pymysql.connect(host = "140.121.197.131", user = "root"
                           , password = "soselab401", db = "test")   
@@ -382,10 +386,11 @@ def tradeRecord():
             connect.rollback()
             print("DB rollback")       
     connect.close()  
+    return 'personalPage tradeRecord...'
 
 # 瀏覽紀錄    
     
-@app.route("/personalPage/surfedRecord", methods = ['GET','POST'])
+@main.route("/personalPage/surfedRecord", methods = ['GET','POST'])
 def surfedRecord():
     connect = pymysql.connect(host = "140.121.197.131", user = "root"
                           , password = "soselab401", db = "test")    
@@ -427,10 +432,11 @@ def surfedRecord():
             connect.rollback()
             print("DB rollback")       
     connect.close() 
+    return 'personalPage surfedRecord...'
     
 # 顯示預約版
     
-@app.route("/personalPage/reservation" , methods = ['GET','POST'])
+@main.route("/personalPage/reservation" , methods = ['GET','POST'])
 def reservation():
     connect = pymysql.connect(host = "140.121.197.131", user = "root"
                           , password = "soselab401", db = "test")
@@ -483,10 +489,11 @@ def reservation():
             connect.rollback()
             print("DB rollback")            
     connect.close() 
+    return 'personalPage reservation...'
     
 #預約留言    
     
-@app.route("/personalPage/reservation/comment" , methods = ['GET','POST'])
+@main.route("/personalPage/reservation/comment" , methods = ['GET','POST'])
 def reservationComment():   
     connect = pymysql.connect(host = "140.121.197.131", user = "root"
                           , password = "soselab401", db = "test")
@@ -514,7 +521,4 @@ def reservationComment():
             connect.rollback()
             print("DB rollback")            
     connect.close()  
-
-if (__name__ == "__main__") :
-    app.run()
-    
+    return 'personalPage reservation comment...'

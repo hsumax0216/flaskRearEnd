@@ -1,11 +1,8 @@
 from flask import Flask, request, jsonify,render_template
 import pymysql
+from .. import main
 
-app = Flask(__name__)
-app.config["JSON_AS_ASCII"]=False
-
-
-@app.route("/index", methods = ['GET'])
+@main.route("/index", methods = ['GET'])
 def homepage():
     connect = pymysql.connect(host = "140.121.197.131", user = "root"
                           , password = "soselab401", db = "test")
@@ -94,7 +91,7 @@ def homepage():
            connect.rollback() 
     return jsonify(hottest,latest)
 
-@app.route("/product_Category/<Category>", methods = ['GET'])
+@main.route("/product_Category/<Category>", methods = ['GET'])
 def ProductCategory(Category):
     connect = pymysql.connect(host = "140.121.197.131", user = "root"
                           , password = "soselab401", db = "test")
@@ -142,11 +139,3 @@ def ProductCategory(Category):
        print(e)
        connect.rollback()     
     connect.close()
-
-if (__name__ == "__main__") :
-    app.run()
-    
- 
-    
-    
-    

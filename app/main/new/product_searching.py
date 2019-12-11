@@ -1,12 +1,9 @@
 from flask import Flask, request, jsonify,render_template
 import pymysql
 import sys
+from .. import main
 
-app = Flask(__name__)
-app.config["JSON_AS_ASCII"]=False
-
-
-@app.route("/product_searching", methods = ['GET'])
+@main.route("/product_searching", methods = ['GET'])
 def Product_searching_Info():
     connect = pymysql.connect(host = "140.121.197.131", user = "root"
                           , password = "soselab401", db = "test")
@@ -60,3 +57,4 @@ def Product_searching_Info():
        print(e)
        connect.rollback()     
     connect.close()
+    return 'product_searching...'
