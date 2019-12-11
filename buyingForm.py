@@ -54,9 +54,12 @@ def CheckOutPage():#dict={'key':'value'}#list=[value]#value=every type
 						db.session.commit()					
 						db.session.refresh(Trade,['TradeID'])
 						tradeidtemp = Trade.TradeID
-						print('Trade.TradeID:'+str(tradeidtemp))	
+						print('Trade.TradeID:'+str(tradeidtemp))
 						Appboard = Appointboard(
 							TradeID = tradeidtemp,\
+							SellerID = seller.ID,\
+							BuyerID = buyer.ID,\
+							ProductID = Product.ProductID,\
 							BoughtDate = datetime.datetime.now()
 							)					
 						db.session.add(Appboard)
