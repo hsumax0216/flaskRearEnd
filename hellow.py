@@ -9,7 +9,7 @@ import pymysql
 app = Flask(__name__)
 app.debug = True
 #app.config['SECRET_KEY'] = 'hard to guess string'
-app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://root:admin@localhost:3306/test"
+app.config["SQLALCHEMY_DATABASE_URI"] = 'mysql+pymysql://root:admin@localhost:3306/test'
 #"mysql+pymysql://root:soselab401@140.121.197.131:3306/test"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True
 
@@ -89,6 +89,9 @@ class Surfedrecord(db.Model):
 class Appointboard(db.Model):
 	_tablename_ = 'Appointboard'
 	TradeID = db.Column(db.Integer,db.ForeignKey('trade.TradeID'),nullable=False,primary_key=True)
+	SellerID = db.Column(db.Integer,nullable=False)
+	BuyerID = db.Column(db.Integer,nullable=False)
+	ProductID = db.Column(db.Integer,nullable=False)
 	AppointDate = db.Column(db.DateTime)
 	BoughtDate = db.Column(db.DateTime,nullable=False)
 	
