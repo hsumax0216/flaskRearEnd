@@ -19,7 +19,7 @@ def signUp():
     userEmail = request.args.get("Email")           #信箱
     userAccount = request.args.get("Account")       #帳號
     userPassword = request.args.get("Password")     #密碼    
-    print(userPhone)
+
      # 寫入database
     SQLIns = "INSERT INTO MEMBER (PhoneNumber, Name, NickName, Email, Account, Password, ImageURL, AvgEv, TotalEvCount) VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', NULL, '0', '0')"\
                   .format(userPhone, userName, userNickname, userEmail, userAccount, userPassword)                
