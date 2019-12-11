@@ -15,7 +15,7 @@ def signUp():
    # GET 格式
     userPhone = request.args.get("Phone")           #手機
     userName = request.args.get("Name")             #姓名
-    userNickname = request.args.get("Id")           #暱稱
+    userNickname = request.args.get("NickName")           #暱稱
     userEmail = request.args.get("Email")           #信箱
     userAccount = request.args.get("Account")       #帳號
     userPassword = request.args.get("Password")     #密碼    
