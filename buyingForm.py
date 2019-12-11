@@ -14,12 +14,12 @@ def CheckOutPage():#dict={'key':'value'}#list=[value]#value=every type
 		boughtItem = dict(zip(Productform,Amountform))						#商品與數量字典
 		itemPrice = dict(zip(Productform,Priceform))						#商品與總價字典
 		buyer = member.query.filter_by(ID = member_id).first()				#買家sql
-		#status = 1 表示 無錯誤
-		t={'status':1}														#回傳JSON字典
+		#state = 1 表示 無錯誤
+		t={'state':1}														#回傳JSON字典
 		errorProduct = []													#發生商品錯誤list
 		errorSeller = []													#發生賣家錯誤list
 		if(buyer is None):
-			t['status']=0
+			t['state']=0
 			t['inform']='buyer memberID: '+str(member_id)+' didn\'t exist.'
 			return jsonify(t)
 		for i in boughtItem:
@@ -66,17 +66,17 @@ def CheckOutPage():#dict={'key':'value'}#list=[value]#value=every type
 						db.session.commit()	
 					except Exception as e:
 						print(e)
-						#status = 0表示 出現錯誤
-						t['status'] = 0
+						#state = 0表示 出現錯誤
+						t['state'] = 0
 						t['inform'] = 'DB was rollback.'
 						db.session.rollback()
 				else:
-					t['status'] = 0
+					t['state'] = 0
 					errorSeller.append(int(Product.SellerID))
 					t['inform_seller'] = "SellerID:  "+str(Product.SellerID)+\
 						"  is error.(by same person or exist)"
 			else:
-				t['status'] = 0
+				t['state'] = 0
 				errorProduct.append(int(prID))
 		
 		if(len(errorProduct) != 0):
@@ -103,12 +103,12 @@ r = requests.post("http://127.0.0.1:5000/CheckOutPage", data = data)
 print(r.text)
 '''
 '''
-{"status":1}
+{"state":1}
 
-{"ProductID":[23],"inform_product":"ProductID:  23  is error.(by amount or exist)","status":0}
+{"ProductID":[23],"inform_product":"ProductID:  23  is error.(by amount or exist)","state":0}
 
 {"ProductID":[24,2,27,29],"SellerID":[1],"inform_product":"ProductID:  24 2 27 29  is error.
-(by amount or exist)","inform_seller":"SellerID:  1  is error.(by same person or exist)","status":0}
+(by amount or exist)","inform_seller":"SellerID:  1  is error.(by same person or exist)","state":0}
 '''
 '''需增加:
 #購買後扣除原來商品的數量(update)
