@@ -439,8 +439,8 @@ def surfedRecord():
     
 @app.route("/personalPage/reservation" , methods = ['POST'])
 def reservation():
-    connect = pymysql.connect(host = "127.0.0.1", user = "root"#140.121.197.131
-                          , password = "admin", db = "test")    #soselab401
+    connect = pymysql.connect(host = "140.121.197.131", user = "root"
+                          , password = "soselab401", db = "test")
     cursor = connect.cursor()     
     userID = request.form['ID']
     print(request.form)
@@ -494,8 +494,8 @@ def reservation():
     
 @app.route("/personalPage/reservation/comment" , methods = ['POST'])
 def reservationComment():   
-    connect = pymysql.connect(host = "127.0.0.1", user = "root"#140.121.197.131
-                              , password = "admin", db = "test")    #soselab401
+    connect = pymysql.connect(host = "140.121.197.131", user = "root"
+                          , password = "soselab401", db = "test")
     cursor = connect.cursor()
     tradeID = request.form['TradeID']
     productID = request.form['ProductID']
