@@ -10,6 +10,9 @@ from config import config
 #moment = Moment()
 db = SQLAlchemy()
 
+def after_request(resp):
+    resp.headers['Access-Control-Allow-Origin'] = '*'
+    return resp
 
 def create_app(config_name):
     app = Flask(__name__)
@@ -23,5 +26,5 @@ def create_app(config_name):
 
     from .main import main as main_blueprint
     app.register_blueprint(main_blueprint)
-
+    app.after_request(after_request)
     return app
