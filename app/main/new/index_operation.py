@@ -92,12 +92,18 @@ def homepage():
            connect.rollback() 
     return jsonify(hottest,latest)
 
-@main.route("/product_Category/<Category>", methods = ['GET'])
-def ProductCategory(Category):
+@main.route("/product_Category", methods = ['GET'])
+def ProductCategory():
     connect = pymysql.connect(host = "140.121.197.131", user = "root"
                           , password = "soselab401", db = "test")
     cursor = connect.cursor()
-
+    Category =request.args.get('Category')
+    if(not Category):
+        t = {
+               'state' : False              # state 表示 是否成功 
+            }
+        return jsonify(t)
+    
     SQLIns = "SELECT * FROM product WHERE Category = '{0}'".format(Category)
     try:
        # 执行sql语句

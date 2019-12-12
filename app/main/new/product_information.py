@@ -2,12 +2,17 @@ from flask import Flask, request, jsonify,render_template
 import pymysql
 from .. import main
 
-@main.route("/product_information/<ProductID>", methods = ['GET'])
-def ProductInfo(ProductID):
+@main.route("/product_information", methods = ['GET'])
+def ProductInfo():
     connect = pymysql.connect(host = "140.121.197.131", user = "root"
                           , password = "soselab401", db = "test")
     cursor = connect.cursor()
-
+    ProductID =request.args.get('ProductID')
+    if(not ProductID):
+        t = {
+               'state' : False              # state 表示 是否成功 
+            }
+        return jsonify(t)
     SQLIns = "SELECT * FROM product WHERE ProductID = {0}".format(ProductID)
     try:
        # 执行sql语句
