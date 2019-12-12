@@ -8,7 +8,7 @@
 #from ..email import send_email
 #from . import main
 #from .forms import NameForm
-from .new import index_operation,product_searching,personal_page,buyingForm\
+from .new import index_operation,product_searching,personal_page,buying_form\
 	,member_management,product_information
 	
 '''

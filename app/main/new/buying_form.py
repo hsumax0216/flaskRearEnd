@@ -10,27 +10,26 @@ import pymysql
 @main.route("/CheckOutPage", methods = ['GET','POST'])#CheckOutPage為暫定url
 def CheckOutPage():#dict={'key':'value'}#list=[value]#value=every type
 	if(request.method == 'POST'):
-		member_id = request.form['member_id']
-		Productform = request.form.getlist('product')
+		member_id = request.form['MemberID']
+		Productform = request.form.getlist('ProductID')
 		Amountform = request.form.getlist('Amount')
-		Priceform = request.form.getlist('price')
+		Priceform = request.form.getlist('Price')
 		boughtItem = dict(zip(Productform,Amountform))						#商品與數量字典
 		itemPrice = dict(zip(Productform,Priceform))						#商品與總價字典
 		buyer = member.query.filter_by(ID = member_id).first()				#買家sql
 		#state = 1 表示 無錯誤
-		t={'state':1}														#回傳JSON字典
+		t={'state':True}														#回傳JSON字典
 		errorProduct = []													#發生商品錯誤list
 		errorSeller = []													#發生賣家錯誤list
 		if(buyer is None):
-			t['state']=0
-			t['inform']='buyer memberID: '+str(member_id)+' didn\'t exist.'
+			t['state']=False
+			print('buyer memberID: '+str(member_id)+' didn\'t exist.')
 			return jsonify(t)
 		for i in boughtItem:
 			prID = i														#商品ID
 			Product = product.query.filter_by(ProductID = prID).first()		#商品sql
 			amount = int(boughtItem[i])										#購買數量
-			Cprice = int(itemPrice[i])										#購買總價
-			#
+			Cprice = int(itemPrice[i])
 			#商品總數 >= 購買商品數量#購買總數 > 0
 			if(Product is not None \
 				and (Product.Amount) >= (amount) \
@@ -50,7 +49,6 @@ def CheckOutPage():#dict={'key':'value'}#list=[value]#value=every type
 							TradePrice = Cprice,\
 							CompletedType = False
 							)
-					print("before TRY")
 					try:
 						db.session.add(Trade)
 						#提交DB
@@ -70,27 +68,26 @@ def CheckOutPage():#dict={'key':'value'}#list=[value]#value=every type
 					except Exception as e:
 						print(e)
 						#state = 0表示 出現錯誤
-						t['state'] = 0
-						t['inform'] = 'DB was rollback.'
+						t['state'] = False
+						print('DB was rollback.')
 						db.session.rollback()
 				else:
-					t['state'] = 0
+					t['state'] = False
 					errorSeller.append(int(Product.SellerID))
-					t['inform_seller'] = "SellerID:  "+str(Product.SellerID)+\
-						"  is error.(by same person or exist)"
+					print("SellerID:  "+str(Product.SellerID)+"  is error.(by same person or exist)")
 			else:
-				t['state'] = 0
+				t['state'] = False
 				errorProduct.append(int(prID))
 		
 		if(len(errorProduct) != 0):
-			t['ProductID'] = errorProduct
+			t['ErrProductID'] = errorProduct
 			err = "ProductID: "
 			for cou in  errorProduct:
 				err+=(" "+str(cou))
 			err+="  is error.(by amount or exist)"
-			t['inform_product'] = err
+			print(err)
 		if(len(errorSeller) != 0):
-			t['SellerID'] = errorSeller
+			t['ErrSellerID'] = errorSeller
 		return jsonify(t)
 	if(request.method == 'GET'):
 		return 'CheckOutPage.html...'
