@@ -8,12 +8,24 @@ def Product_searching_Info():
     connect = pymysql.connect(host = "140.121.197.131", user = "root"
                           , password = "soselab401", db = "test")
     cursor = connect.cursor()
-    productName =request.args.get('name','無')
-    lowerPrice =request.args.get('firstPrice',0)
-    higherPrice =request.args.get('lastPrice',sys.maxsize)
-    productEv =request.args.get('商品星級',0)
+	
+    productName =request.args.get('Name')
+    lowerPrice =request.args.get('FirstPrice')
+    higherPrice =request.args.get('LastPrice')
+    productEv =request.args.get('AvgEv')
     
-    SQLIns = "SELECT * FROM product WHERE ProductName  LIKE '%{0}%' AND AvgEv >={1} AND  (Price BETWEEN {2} AND {3} OR BiddingPrice BETWEEN {4} AND {5}) "\
+    if(not productName):
+        productName='無'
+    if(not lowerPrice):
+        lowerPrice=0
+    if(not higherPrice):
+        higherPrice=sys.maxsize
+    if(not productEv):
+        productEv=0		
+    #print(productName,lowerPrice,higherPrice,productEv)
+    SQLIns = "SELECT * FROM product WHERE ProductName  \
+		LIKE '%{0}%' AND AvgEv >={1} AND  (Price BETWEEN {2} \
+		AND {3} OR BiddingPrice BETWEEN {4} AND {5}) "\
     .format(productName,productEv,lowerPrice,higherPrice,lowerPrice,higherPrice)
 
     try:
