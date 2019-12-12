@@ -43,11 +43,11 @@ def homepage():
                        'TotalEvCount':data[14]
                        }
                    hottest.append(t)
-               else:
-                   t = {
-                       'state' : False              # state 表示 是否成功 
-                       }
-                   return jsonify(t)
+       else:
+	   t = {
+	       'state' : False              # state 表示 是否成功 
+	       }
+	   return jsonify(t)
     except Exception as e:
     	   # 如果发生错误则回滚
            print(e)
