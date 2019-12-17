@@ -10,7 +10,7 @@ def homepage():
     hottest=[]
     latest=[]
     
-    SQLIns = "SELECT * FROM product ORDER BY TotalEvCount ASC"
+    SQLIns = "SELECT * FROM product ORDER BY SurfedTimes DESC"              #熱門商品，舉出8樣，游瀏覽次數高到低排序
     
     try:
    # 执行sql语句
@@ -19,7 +19,7 @@ def homepage():
  
            
            
-           for i in range (0,7):  
+           for i in range (0,7):                                            #不到8樣會輸出僅有項目
                data = cursor.fetchone()
                if(data is not None):
              #  print(data)
@@ -40,7 +40,8 @@ def homepage():
                        'Information' : data[11],
                        'Category' : data[12],
                        'AvgEv':data[13],
-                       'TotalEvCount':data[14]
+                       'TotalEvCount':data[14],
+                       'SurfedTimes':data[15]
                        }
                    hottest.append(t)
                    
@@ -53,12 +54,12 @@ def homepage():
     	   # 如果发生错误则回滚
            print(e)
            connect.rollback()     
-    SQLIns = "SELECT * FROM product ORDER BY ProductID DESC"
+    SQLIns = "SELECT * FROM product ORDER BY ProductID DESC"                         #最新商品，由商品ID大排到小
     
     try:
    # 执行sql语句
        if(cursor.execute(SQLIns)):
-           for i in range (0,7):  
+           for i in range (0,7):                                                       #不到8樣會輸出僅有項目  
                data = cursor.fetchone()
                if(data is not None):
                    print(data)
@@ -78,7 +79,8 @@ def homepage():
                        'Information' : data[11],
                        'Category' : data[12],
                        'AvgEv':data[13],
-                       'TotalEvCount':data[14]
+                       'TotalEvCount':data[14],
+                       'SurfedTimes':data[15]
                        }
                    latest.append(t)
        else:
@@ -91,6 +93,7 @@ def homepage():
            print(e)
            connect.rollback() 
     return jsonify(hottest,latest)
+    connect.close()
 
 @main.route("/product_Category", methods = ['GET'])
 def ProductCategory():
@@ -131,7 +134,8 @@ def ProductCategory():
                    'Information' : data[11],
                    'Category' : data[12],
                    'AvgEv':data[13],
-                   'TotalEvCount':data[14]
+                   'TotalEvCount':data[14],
+                   'SurfedTimes':data[15]
                    }
                ans.append(t)
                data = cursor.fetchone()

@@ -54,7 +54,8 @@ def Product_searching_Info():
                    'Information' : data[11],
                    'Category' : data[12],
                    'AvgEv':data[13],
-                   'TotalEvCount':data[14]
+                   'TotalEvCount':data[14],
+                   'SurfedTimes':data[15]
                    }
                ans.append(t)
                data = cursor.fetchone()
