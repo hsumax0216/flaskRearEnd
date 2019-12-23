@@ -472,6 +472,7 @@ def reservation():
                     print(rows)
                     t = {
                             'state' : True,
+							'TradeID' : rows[0],			# this 
                             'AppointDate' : rows[4],
                             'BoughtDate' : rows[5],
                             'Comment' : dataComment,
