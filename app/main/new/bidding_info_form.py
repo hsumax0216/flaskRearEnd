@@ -83,8 +83,8 @@ def biddingDownPage():#dict={'key':'value'}#list=[value]#value=every type
 	if(request.method == 'GET'):
 		return 'biddingDownPage...'
 
-@main.route("/bidding_info", methods = ['GET','POST'])
-def Bidding_Info():
+@main.route("/biddingInfo", methods = ['GET','POST'])
+def BiddingInfo():
 	if(request.method == 'POST'):
 		nowtime = datetime.datetime.now()
 		mbID  = request.form['MemberID']
@@ -99,11 +99,14 @@ def Bidding_Info():
 		try:
 			ans = []
 			for bd in bid:
-				PD = product.query.filter_by(ProductID = bd.ProductID)
+				PD = product.query.filter_by(ProductID = bd.ProductID).first()
 				temp = {					
 				# state 表示 是否成功
+				#IsGEthanLowestPrice #is greater or equal than LowestPrice
 				'state' : True ,\
 				'OverBidTime' : (PD.BiddingDeadline < nowtime),\
+				'IsTheBiddingTopUserID' : (PD.BiddingTopUserID == int(mbID)),\
+				'IsGEthanLowestPrice' : (PD.BiddingPrice >= PD.LowestPrice),\
 				'ProductID' : PD.ProductID,\
 				'SellerID' : PD.SellerID,\
 				'ProductName' : PD.ProductName,\
@@ -118,7 +121,8 @@ def Bidding_Info():
 				'Information' : PD.Information,\
 				'Category' : PD.Category,\
 				'AvgEv' : PD.AvgEv,\
-				'TotalEvCount' : PD.TotalEvCount
+				'TotalEvCount' : PD.TotalEvCount,\
+				'SurfedTimes' : PD.SurfedTimes
 				}
 				ans.append(temp)
 			return jsonify(ans)
@@ -127,6 +131,8 @@ def Bidding_Info():
 			#state = 0表示 出現錯誤
 			t['state'] = False
 			print('PD was error.')
+		print('no data')
+		return jsonify(t)
 	if(request.method == 'GET'):
 		return 'biddingInfoPage...'
 
