@@ -1,13 +1,19 @@
 import requests
 
-data = {'MemberID' : 20,
+data = {'MemberID' : 21}
+r = requests.post("http://127.0.0.1:5000/biddingInfo", data = data)
+
+print(r.text)
+
+'''
+data = {'MemberID' : 21,
 		'ProductID' : 56,
-		'Price' : 1500,
+		'Price' : 1510,
 		'Amount' : 1}
 r = requests.post("http://127.0.0.1:5000/biddingDownPage", data = data)
 
 print(r.text)
-
+'''
 '''
 data = {'MemberID' : 4,
 		'ProductID' : [23],
