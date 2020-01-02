@@ -209,17 +209,18 @@ def edit():
         
 @main.route("/personalPage/onSale/delete", methods = ['GET','POST'])
 def delete(): 
-    connect = pymysql.connect(host = "140.121.197.131", user = "root"
+     connect = pymysql.connect(host = "140.121.197.131", user = "root"
                           , password = "soselab401", db = "test")
     cursor = connect.cursor()
     if request.method == 'POST':
         productID = request.form['ID']    
         SQLIns = "DELETE FROM product WHERE ProductID = '{0}'".format(productID)
+        SQLIns2 = "DELETE FROM comment WHERE ProductID = '{0}'".format(productID)
         try:
             # 执行sql语句
-            if(cursor.execute(SQLIns)):
+            if(cursor.execute(SQLIns2) | cursor.execute(SQLIns)):
                 t = {
-                        'state' : True,              # state 表示 是否成功                
+                        'state' : True               # state 表示 是否成功                
                         }
                 connect.commit()
                 return jsonify(t)
@@ -231,7 +232,7 @@ def delete():
         except Exception as e:
         #印出錯誤訊息
             print(e)
-	   # 如果发生错误则回滚
+       # 如果发生错误则回滚
             connect.rollback()
             print("DB rollback")       
     connect.close()
