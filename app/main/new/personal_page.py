@@ -474,43 +474,49 @@ def reservation():
         userID = request.form['ID']
         print(request.form)
         SQLIns = "SELECT * FROM appointboard WHERE SellerID = '{0}' OR BuyerID = '{0}'".format(userID) 
-    
+        
         resJson = []
         t = {}
+        t1 = {}
+        c = []
         try :
             if(cursor.execute(SQLIns)):
                 data = cursor.fetchall()
-                print(data)
+                print(data)            
                 for rows in data:
-                    SQLIns2 = "SELECT Information FROM comment WHERE TradeID =  %(tID)s"
-                    cursor.execute(SQLIns2, {'tID' : rows[0]})
+                    SQLIns2 = "SELECT Information, CommenterID FROM comment WHERE TradeID = '{0}'".format(rows[0])
+                    cursor.execute(SQLIns2)
                     dataComment = cursor.fetchall()
-                               
-                    SQLIns3 = "SELECT NickName FROM member WHERE ID = %(sID)s"
-                    cursor.execute(SQLIns3, {'sID' : rows[1]})
+                    SQLIns3 = "SELECT NickName FROM member WHERE ID = '{0}'".format(rows[1])
+                    cursor.execute(SQLIns3)
                     dataSellerNickName = cursor.fetchone()
-                
-                    SQLIns4 = "SELECT NickName FROM member WHERE ID = %(bID)s"
-                    cursor.execute(SQLIns4, {'bID' : rows[2]})
+                    SQLIns4 = "SELECT NickName FROM member WHERE ID = '{0}'".format(rows[2])
+                    cursor.execute(SQLIns4)
                     dataBuyerNickName = cursor.fetchone()
-                    
-                    SQLIns5 = "SELECT ProductName, ImageURL FROM product WHERE ProductID = %(pID)s"
-                    cursor.execute(SQLIns5, {'pID' : rows[3]} )
-                    dataProduct = cursor.fetchone()
-                    
-                    print(rows)
+                    SQLIns5 = "SELECT ProductName, ImageURL FROM product WHERE ProductID = '{0}'".format(rows[3])
+                    cursor.execute(SQLIns5)
+                    dataProduct = cursor.fetchone()   
                     t = {
                             'state' : True,
 							'TradeID' : rows[0],			# this 
                             'AppointDate' : rows[4],
                             'BoughtDate' : rows[5],
-                            'Comment' : dataComment,
                             'SellerName' : dataSellerNickName[0],
                             'BuyerName' : dataBuyerNickName[0],
                             'ProductName' : dataProduct[0],
                             'ProductImg' : dataProduct[1]
                             }
+                    for info in dataComment:
+                        SQLIns6 = "SELECT NickName FROM member WHERE ID = '{0}'".format(info[1])
+                        cursor.execute(SQLIns6)
+                        CommenterName = cursor.fetchone()
+                        t1 = {
+                                'Comment' : info[0],
+                                'CommenterName' : CommenterName[0]
+                            }      
+                        c.append(t1)
                     resJson.append(t)
+                    resJson.append(c)
             return jsonify(resJson)       
         except Exception as e:
         #印出錯誤訊息
