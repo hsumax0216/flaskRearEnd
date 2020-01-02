@@ -209,7 +209,7 @@ def edit():
         
 @main.route("/personalPage/onSale/delete", methods = ['GET','POST'])
 def delete(): 
-     connect = pymysql.connect(host = "140.121.197.131", user = "root"
+    connect = pymysql.connect(host = "140.121.197.131", user = "root"
                           , password = "soselab401", db = "test")
     cursor = connect.cursor()
     if request.method == 'POST':
@@ -232,7 +232,7 @@ def delete():
         except Exception as e:
         #印出錯誤訊息
             print(e)
-       # 如果发生错误则回滚
+	   # 如果发生错误则回滚
             connect.rollback()
             print("DB rollback")       
     connect.close()
