@@ -40,7 +40,7 @@ def personalPage():
                 resPersonal = {
                         'state' : False              # state 表示 是否成功 
                         }
-            if(cursor.execute(SQLIns2)):
+            """if(cursor.execute(SQLIns2)):
                 data2 = cursor.fetchall()
                 resJson = []
                 t = {}
@@ -60,8 +60,9 @@ def personalPage():
                             'state' : False              # state 表示 是否成功 
                             }
                     resProduct.append(t)
+            
+            resJson.append(resProduct)"""
             resJson.append(resPersonal)
-            resJson.append(resProduct)
             return jsonify(resJson)
         except Exception as e:
             print(e)
