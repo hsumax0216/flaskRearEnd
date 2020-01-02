@@ -108,6 +108,7 @@ class comment(db.Model):
 	CommentID = db.Column(db.Integer,nullable=False,primary_key=True,autoincrement=True)
 	TradeID = db.Column(db.Integer,db.ForeignKey('trade.TradeID'))
 	ProductID = db.Column(db.Integer,db.ForeignKey('product.ProductID'),nullable=False)
+	CommenterID = db.Column(db.Integer,db.ForeignKey('member.ID'))
 	Information = db.Column(db.Text(255))
 	CommentDatetime = db.Column(db.DateTime,nullable=False)
 
