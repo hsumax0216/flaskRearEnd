@@ -15,11 +15,17 @@ def personalPage():
     if request.method == 'POST':
         userID = request.form['ID']
         SQLIns = "SELECT * FROM MEMBER WHERE ID = {0}".format(userID)
+        SQLIns2 = "SELECT ProductName, Price, LowestPrice, BiddingPrice, BiddingUnitPrice, BiddingDeadline FROM product WHERE SellerID = {0}".format(userID)
+
+       # 执行sql语句
         try:
-            # 执行sql语句
+            resJson = []
+            resProduct = []
+            resPersonal = {}
+            t = {}
             if(cursor.execute(SQLIns)):
                 data = cursor.fetchone()
-                t = {
+                resPersonal = {
                         'state' : True,              # state 表示 是否成功 
                         'ID' : data[0],
                         'PhoneNumber' : data[1],
@@ -30,14 +36,35 @@ def personalPage():
                         'Password' : data[6],
                         'ImageURL' : data[7]
                         }
-                return jsonify(t)
             else:
-                t = {
+                resPersonal = {
                         'state' : False              # state 表示 是否成功 
                         }
-                return jsonify(t)
-        except:
-            果发生错误则回滚
+            if(cursor.execute(SQLIns2)):
+                data2 = cursor.fetchall()
+                resJson = []
+                t = {}
+                for rows in data2:                   
+                    t  =  {       
+                            'state' : True,                            
+                            'ProductName' : rows[0],                                                   
+                            'Price' :    rows[1],
+                            'LowestPrice' : rows[2],
+                            'BiddingPrice' : rows[3],
+                            'BiddingUnitPrice' : rows[4],
+                            'BiddingDeadLine' : rows[5]                                                            
+                            }       
+                    resProduct.append(t)
+                else:
+                    t = {
+                            'state' : False              # state 表示 是否成功 
+                            }
+                    resProduct.append(t)
+            resJson.append(resPersonal)
+            resJson.append(resProduct)
+            return jsonify(resJson)
+        except Exception as e:
+            print(e)
             connect.rollback()
             print("DB rollback")       
     connect.close()
