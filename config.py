@@ -16,7 +16,11 @@ class Config:
     FLASKY_ADMIN = os.environ.get('FLASKY_ADMIN')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     JSON_AS_ASCII=False
-
+    DB_HOST="140.121.197.131"
+    DB_USER = "root"
+    DB_PW = "soselab401"
+    DB_DB = "test"
+    
     @staticmethod
     def init_app(app):
         pass

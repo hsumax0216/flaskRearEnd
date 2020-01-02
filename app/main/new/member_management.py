@@ -1,14 +1,15 @@
 from flask import Flask, request, jsonify
 import pymysql
 from .. import main
+from config import Config
 
 ## 註冊
 
 @main.route("/signUp", methods = ['GET'])
 def signUp():
 
-    connect = pymysql.connect(host = "140.121.197.131", user = "root"
-                          , password = "soselab401", db = "test")
+    connect = pymysql.connect(host = Config.DB_HOST, user = Config.DB_USER
+                          , password = Config.DB_PW, db = Config.DB_DB)
     cursor = connect.cursor()
 
    # GET 格式
@@ -54,8 +55,8 @@ def signUp():
 
 @main.route("/signIn", methods = ['GET','POST'])
 def signIn():
-    connect = pymysql.connect(host = "140.121.197.131", user = "root"
-                          , password = "soselab401", db = "test")
+    connect = pymysql.connect(host = Config.DB_HOST, user = Config.DB_USER
+                          , password = Config.DB_PW, db = Config.DB_DB)
     cursor = connect.cursor()
     if request.method == 'POST': 
     # POST 格式

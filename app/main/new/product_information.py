@@ -2,12 +2,13 @@ from flask import Flask, request, jsonify,render_template
 import pymysql
 import datetime
 from .. import main
+from config import Config
 
 #商品資料及留言資料
 @main.route("/product_information", methods = ['GET'])
 def ProductInfo():
-    connect = pymysql.connect(host = "140.121.197.131", user = "root"
-                      , password = "soselab401", db = "test")
+    connect = pymysql.connect(host = Config.DB_HOST, user = Config.DB_USER
+                          , password = Config.DB_PW, db = Config.DB_DB)
     cursor = connect.cursor()
     cursor2= connect.cursor()
     ProductID =request.args.get('ProductID')
@@ -105,8 +106,8 @@ def ProductInfo():
 #留言
 @main.route("/product_comment", methods = ['GET','POST'])
 def Productcomment():
-    connect = pymysql.connect(host = "140.121.197.131", user = "root"
-                      , password = "soselab401", db = "test")
+    connect = pymysql.connect(host = Config.DB_HOST, user = Config.DB_USER
+                          , password = Config.DB_PW, db = Config.DB_DB)
     cursor = connect.cursor()    
     
     if request.method == 'POST':
@@ -174,8 +175,8 @@ def Productcomment():
 #瀏覽紀錄
 @main.route("/product_surfing_record", methods = ['GET','POST'])
 def add_surfing_record():
-    connect = pymysql.connect(host = "140.121.197.131", user = "root"
-                      , password = "soselab401", db = "test")
+    connect = pymysql.connect(host = Config.DB_HOST, user = Config.DB_USER
+                          , password = Config.DB_PW, db = Config.DB_DB)
     cursor = connect.cursor()
     if request.method == 'POST':
         ProductID =request.form.get('ProductID')

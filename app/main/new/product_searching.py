@@ -2,11 +2,12 @@ from flask import Flask, request, jsonify,render_template
 import pymysql
 import sys
 from .. import main
+from config import Config
 
 @main.route("/product_searching", methods = ['GET'])
 def Product_searching_Info():
-    connect = pymysql.connect(host = "140.121.197.131", user = "root"
-                          , password = "soselab401", db = "test")
+    connect = pymysql.connect(host = Config.DB_HOST, user = Config.DB_USER
+                          , password = Config.DB_PW, db = Config.DB_DB)
     cursor = connect.cursor()
 	
     productName =request.args.get('Name')

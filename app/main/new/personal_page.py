@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 import pymysql
 import datetime
 from .. import main
+from config import Config
 
 ## 顯示個人介面
 ## 前端傳ID，後端根據ID 回傳json格式的member資料    
@@ -9,8 +10,8 @@ from .. import main
 @main.route("/personalPage", methods = ['GET','POST'])
 def personalPage():
     
-    connect = pymysql.connect(host = "140.121.197.131", user = "root"
-                          , password = "soselab401", db = "test")
+    connect = pymysql.connect(host = Config.DB_HOST, user = Config.DB_USER
+                          , password = Config.DB_PW, db = Config.DB_DB)
     cursor = connect.cursor()
     if request.method == 'POST':
         userID = request.form['ID']
@@ -75,8 +76,8 @@ def personalPage():
 
 @main.route("/personalPage/onSale", methods = ['GET','POST'])
 def onSale():
-    connect = pymysql.connect(host = "140.121.197.131", user = "root"
-                          , password = "soselab401", db = "test")
+    connect = pymysql.connect(host = Config.DB_HOST, user = Config.DB_USER
+                          , password = Config.DB_PW, db = Config.DB_DB)
     cursor = connect.cursor()
     if request.method == 'POST':
         userID = request.form['ID']
@@ -118,8 +119,8 @@ def onSale():
 
 @main.route("/personalPage/onSale/sale", methods = ['GET','POST'])
 def sale():
-    connect = pymysql.connect(host = "140.121.197.131", user = "root"
-                          , password = "soselab401", db = "test")
+    connect = pymysql.connect(host = Config.DB_HOST, user = Config.DB_USER
+                          , password = Config.DB_PW, db = Config.DB_DB)
     cursor = connect.cursor()
     if request.method == 'POST':
         bidding = request.form['Bidding']
@@ -177,8 +178,8 @@ LowestPrice, BiddingPrice, BiddingUnitPrice, BiddingDeadline, BiddingTopUserID, 
     
 @main.route("/personalPage/onSale/edit", methods = ['GET','POST'])
 def edit(): 
-    connect = pymysql.connect(host = "140.121.197.131", user = "root"
-                          , password = "soselab401", db = "test")
+    connect = pymysql.connect(host = Config.DB_HOST, user = Config.DB_USER
+                          , password = Config.DB_PW, db = Config.DB_DB)
     cursor = connect.cursor()
     
     if request.method == 'POST':
@@ -211,8 +212,8 @@ def edit():
         
 @main.route("/personalPage/onSale/delete", methods = ['GET','POST'])
 def delete(): 
-    connect = pymysql.connect(host = "140.121.197.131", user = "root"
-                          , password = "soselab401", db = "test")
+    connect = pymysql.connect(host = Config.DB_HOST, user = Config.DB_USER
+                          , password = Config.DB_PW, db = Config.DB_DB)
     cursor = connect.cursor()
     if request.method == 'POST':
         productID = request.form['ID']    
@@ -244,8 +245,8 @@ def delete():
     
 @main.route("/personalPage/onTrade", methods = ['GET','POST'])
 def onTrade():           
-    connect = pymysql.connect(host = "140.121.197.131", user = "root"
-                          , password = "soselab401", db = "test")
+    connect = pymysql.connect(host = Config.DB_HOST, user = Config.DB_USER
+                          , password = Config.DB_PW, db = Config.DB_DB)
     cursor = connect.cursor()
     if request.method == 'POST':        
         userID = request.form['ID']
@@ -303,8 +304,8 @@ def onTrade():
     
 @main.route("/personalPage/onTrade/tradeCompleted", methods = ['GET','POST'])
 def tradeCompelete():           
-    connect = pymysql.connect(host = "140.121.197.131", user = "root"
-                          , password = "soselab401", db = "test")
+    connect = pymysql.connect(host = Config.DB_HOST, user = Config.DB_USER
+                          , password = Config.DB_PW, db = Config.DB_DB)
     cursor = connect.cursor()        
     if request.method == 'POST':
         tradeID = request.form['ID']
@@ -345,8 +346,8 @@ def tradeCompelete():
 
 @main.route("/personalPage/tradeRecord", methods = ['GET','POST'])
 def tradeRecord():
-    connect = pymysql.connect(host = "140.121.197.131", user = "root"
-                          , password = "soselab401", db = "test")   
+    connect = pymysql.connect(host = Config.DB_HOST, user = Config.DB_USER
+                          , password = Config.DB_PW, db = Config.DB_DB)   
     cursor = connect.cursor()     
     if request.method == 'POST':
         userID = request.form['ID']
@@ -421,8 +422,8 @@ def tradeRecord():
     
 @main.route("/personalPage/surfedRecord", methods = ['GET','POST'])
 def surfedRecord():
-    connect = pymysql.connect(host = "140.121.197.131", user = "root"
-                          , password = "soselab401", db = "test")    
+    connect = pymysql.connect(host = Config.DB_HOST, user = Config.DB_USER
+                          , password = Config.DB_PW, db = Config.DB_DB)
     cursor = connect.cursor()
     if request.method == 'POST':     
         userID = request.form['ID']        
@@ -467,8 +468,8 @@ def surfedRecord():
     
 @main.route("/personalPage/reservation" , methods = ['GET','POST'])
 def reservation():
-    connect = pymysql.connect(host = "140.121.197.131", user = "root"
-                          , password = "soselab401", db = "test")
+    connect = pymysql.connect(host = Config.DB_HOST, user = Config.DB_USER
+                          , password = Config.DB_PW, db = Config.DB_DB)
     cursor = connect.cursor()     
     if request.method == 'POST':
         userID = request.form['ID']
@@ -531,8 +532,8 @@ def reservation():
     
 @main.route("/personalPage/reservation/comment" , methods = ['GET','POST'])
 def reservationComment():   
-    connect = pymysql.connect(host = "140.121.197.131", user = "root"
-                          , password = "soselab401", db = "test")
+    connect = pymysql.connect(host = Config.DB_HOST, user = Config.DB_USER
+                          , password = Config.DB_PW, db = Config.DB_DB)
     cursor = connect.cursor()
     if request.method == 'POST':
         tradeID = request.form['TradeID']
