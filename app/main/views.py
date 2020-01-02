@@ -9,7 +9,7 @@
 #from . import main
 #from .forms import NameForm
 from .new import index_operation,product_searching,personal_page,buying_form\
-	,member_management,product_information
+	,member_management,product_information,bidding_info_form
 	
 '''
 @main.route('/', methods=['GET', 'POST'])

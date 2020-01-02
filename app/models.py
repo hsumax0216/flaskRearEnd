@@ -52,6 +52,7 @@ class product(db.Model):
 	Category = db.Column(db.VARCHAR(255),nullable=False)
 	AvgEv = db.Column(db.FLOAT)
 	TotalEvCount = db.Column(db.Integer)
+	SurfedTimes = db.Column(db.Integer,nullable=False,default=0)
 	
 	def __repr__(self):
 		return '<product %r>' % self.ProductID
