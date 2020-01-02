@@ -216,11 +216,12 @@ def delete():
     if request.method == 'POST':
         productID = request.form['ID']    
         SQLIns = "DELETE FROM product WHERE ProductID = '{0}'".format(productID)
+        SQLIns2 = "DELETE FROM comment WHERE ProductID = '{0}'".format(productID)
         try:
             # 执行sql语句
-            if(cursor.execute(SQLIns)):
+            if(cursor.execute(SQLIns2) | cursor.execute(SQLIns)):
                 t = {
-                        'state' : True,              # state 表示 是否成功                
+                        'state' : True               # state 表示 是否成功                
                         }
                 connect.commit()
                 return jsonify(t)
