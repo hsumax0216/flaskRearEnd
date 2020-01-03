@@ -508,12 +508,13 @@ def reservation():
                             'ProductImg' : dataProduct[1]
                             }
                     for info in dataComment:
-                        SQLIns6 = "SELECT NickName FROM member WHERE ID = '{0}'".format(info[1])
+                        SQLIns6 = "SELECT NickName, ImageURL FROM member WHERE ID = '{0}'".format(info[1])
                         cursor.execute(SQLIns6)
-                        CommenterName = cursor.fetchone()
+                        dataCommenter = cursor.fetchall()
                         t1 = {
                                 'Comment' : info[0],
-                                'CommenterName' : CommenterName[0]
+                                'CommenterName' : dataCommenter[0][0],
+                                'CommenterImageURL': dataCommenter[0][1]
                             }      
                         c.append(t1)
                     resJson.append(t)
@@ -536,10 +537,11 @@ def reservationComment():
                           , password = Config.DB_PW, db = Config.DB_DB)
     cursor = connect.cursor()
     if request.method == 'POST':
+        userID = request.form['ID']
         tradeID = request.form['TradeID']
         productID = request.form['ProductID']
         information = request.form['Information']
-        SQLIns = "INSERT INTO comment(TradeID, ProductID, Information, CommentDateTime) VALUES('{0}', '{1}', '{2}', '{3}')".format(tradeID, productID, information, datetime.date.today())
+        SQLIns = "INSERT INTO comment(TradeID, ProductID, Information, CommentDateTime, CommenterID) VALUES('{0}', '{1}', '{2}', '{3}', '{4}')".format(tradeID, productID, information, datetime.date.today(),userID)
         try :
             if(cursor.execute(SQLIns)):
                 t = {
