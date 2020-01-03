@@ -30,6 +30,8 @@ class member(db.Model):
 	ImageURL = db.Column(db.VARCHAR(255))
 	AvgEv = db.Column(db.FLOAT)
 	TotalEvCount = db.Column(db.Integer)
+	VerificationCode = db.Column(db.VARCHAR(6),nullable=False)
+	VerificationStatus = db.Column(db.BOOL,nullable=False)
 	
 	
 	def __repr__(self):
