@@ -72,6 +72,45 @@ def signUp():
     message['Subject'] = Header(subject, 'utf-8')
  
  
+
+
+    # 寫入database
+     
+    SQLIns = "INSERT INTO MEMBER (PhoneNumber, Name, NickName, Email, Account, Password, ImageURL, AvgEv, TotalEvCount, VerificationCode, VerificationStatus) VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', NULL, '0', '0', '{6}', '0')"\
+                  .format(userPhone, userName, userNickname, userEmail, userAccount, userPassword, verification_code)                
+    SQLIns2 = "SELECT * FROM member WHERE Account = '{0}'".format(userAccount)
+    
+    try:
+        cursor.execute(SQLIns2)
+        data = cursor.fetchone()
+        print(data)
+        if(data != None):
+            t = {
+                    'state' : False
+                    }
+            return jsonify(t)
+            
+        else:    
+            if(cursor.execute(SQLIns)):
+                t = {
+                        'state' : True              # state 表示 是否成功 
+                        }
+                # 提交到数据库执行
+                connect.commit()
+                return jsonify(t)
+            else:
+                t = {
+                        'state' : False              # state 表示 是否成功 
+                        }
+                # 提交到数据库执行
+                return jsonify(t)		   
+    except Exception as e:
+    #印出錯誤訊息
+        print(e)
+	# 錯誤回滾
+        connect.rollback()
+        print("DB rollback")    
+        
     try:
         smtpObj = smtplib.SMTP() 
         smtpObj.connect(mail_host, 25)    # 25 为 SMTP 端口号
@@ -80,32 +119,7 @@ def signUp():
         print ("Success")
     except smtplib.SMTPException:
         print ("False")
-
-     # 寫入database
-    SQLIns = "INSERT INTO MEMBER (PhoneNumber, Name, NickName, Email, Account, Password, ImageURL, AvgEv, TotalEvCount, VerificationCode, VerificationStatus) VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', NULL, '0', '0', '{6}', '0')"\
-                  .format(userPhone, userName, userNickname, userEmail, userAccount, userPassword, verification_code)                
-    try:
-       # 执行sql语句
-       if(cursor.execute(SQLIns)):
-           t = {
-                   'state' : True              # state 表示 是否成功 
-                   }
-           # 提交到数据库执行
-           connect.commit()
-           return jsonify(t)
-       else:
-           t = {
-                   'state' : False              # state 表示 是否成功 
-                   }
-           # 提交到数据库执行
-           connect.commit()
-           return jsonify(t)		   
-    except Exception as e:
-    #印出錯誤訊息
-        print(e)
-	# 錯誤回滾
-        connect.rollback()
-        print("DB rollback")       
+        
     connect.close() 
 
 ## 登入
