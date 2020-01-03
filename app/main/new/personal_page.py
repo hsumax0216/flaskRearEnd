@@ -532,14 +532,15 @@ def reservation():
     
 @main.route("/personalPage/reservation/comment" , methods = ['GET','POST'])
 def reservationComment():   
-    connect = pymysql.connect(host = Config.DB_HOST, user = Config.DB_USER
-                          , password = Config.DB_PW, db = Config.DB_DB)
+    connect = pymysql.connect(host = "140.121.197.131", user = "root"
+                          , password = "soselab401", db = "test")
     cursor = connect.cursor()
     if request.method == 'POST':
+        userID = request.form['ID']
         tradeID = request.form['TradeID']
         productID = request.form['ProductID']
         information = request.form['Information']
-        SQLIns = "INSERT INTO comment(TradeID, ProductID, Information, CommentDateTime) VALUES('{0}', '{1}', '{2}', '{3}')".format(tradeID, productID, information, datetime.date.today())
+        SQLIns = "INSERT INTO comment(TradeID, ProductID, Information, CommentDateTime, CommenterID) VALUES('{0}', '{1}', '{2}', '{3}', '{4}')".format(tradeID, productID, information, datetime.date.today(),userID)
         try :
             if(cursor.execute(SQLIns)):
                 t = {
