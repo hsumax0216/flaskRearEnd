@@ -3,6 +3,19 @@ import pymysql
 from .. import main
 from config import Config
 
+import random
+import smtplib
+from email.mime.text import MIMEText
+from email.header import Header
+code_list = [] 
+for i in range(10): # 0-9數字
+    code_list.append(str(i))
+for i in range(65, 91): # 對應從“A”到“Z”的ASCII碼
+    code_list.append(chr(i))
+mail_host="mail.ntou.edu.tw"  #设置服务器
+mail_user="00657002"    #用户名
+mail_pass="H125156743"   #口令 
+
 ## 註冊
 
 @main.route("/signUp", methods = ['GET'])
@@ -12,7 +25,7 @@ def signUp():
                           , password = Config.DB_PW, db = Config.DB_DB)
     cursor = connect.cursor()
 
-   # GET 格式
+  # GET 格式
     userPhone = request.args.get("Phone")           #手機
     userName = request.args.get("Name")             #姓名
     userNickname = request.args.get("NickName")           #暱稱
@@ -24,9 +37,53 @@ def signUp():
                 'state' : False                
                 }
         return jsonify(t)
+    
+    #寄信
+    myslice = random.sample(code_list, 6) # 從list中隨機獲取6個元素，作為一個片斷返回
+    verification_code = ''.join(myslice) # list to string
+    mail_msg = """
+<p>
+<br>
+感謝您註冊海大拍賣系統<br><br><br>
+----------------------------
+<br><br>
+您的暱稱為: {0}
+<br>
+您註冊的帳號為: {1}
+<br>
+您註冊的密碼為: {2}
+<br><br>
+----------------------------
+<br><br>
+您的註冊信箱認證碼為 {3}
+<br><br>
+請點選以下網址進行信箱驗證！
+</p>
+<p><a href=https://www.itread01.com/study/python-email.html>https://www.itread01.com/study/python-email.html
+
+""".format(userNickname, userAccount, userPassword, verification_code)
+    sender = '00657002@mail.ntou.edu.tw'
+    receivers = [userEmail]
+    message = MIMEText(mail_msg, 'html', 'utf-8')
+    message['From'] = Header(sender, 'utf-8')
+    message['To'] =  Header(receivers[0], 'utf-8')
+    
+    subject = '感謝您註冊海大拍賣系統'
+    message['Subject'] = Header(subject, 'utf-8')
+ 
+ 
+    try:
+        smtpObj = smtplib.SMTP() 
+        smtpObj.connect(mail_host, 25)    # 25 为 SMTP 端口号
+        smtpObj.login(mail_user,mail_pass)  
+        smtpObj.sendmail(sender, receivers, message.as_string())
+        print ("Success")
+    except smtplib.SMTPException:
+        print ("False")
+
      # 寫入database
-    SQLIns = "INSERT INTO MEMBER (PhoneNumber, Name, NickName, Email, Account, Password, ImageURL, AvgEv, TotalEvCount) VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', NULL, '0', '0')"\
-                  .format(userPhone, userName, userNickname, userEmail, userAccount, userPassword)                
+    SQLIns = "INSERT INTO MEMBER (PhoneNumber, Name, NickName, Email, Account, Password, ImageURL, AvgEv, TotalEvCount, VerificationCode, VerificationStatus) VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', NULL, '0', '0', '{6}', '0')"\
+                  .format(userPhone, userName, userNickname, userEmail, userAccount, userPassword, verification_code)                
     try:
        # 执行sql语句
        if(cursor.execute(SQLIns)):
@@ -60,8 +117,8 @@ def signIn():
     cursor = connect.cursor()
     if request.method == 'POST': 
     # POST 格式
-        userAccount = request.form['account']   # 登入帳號
-        userPassword = request.form['password'] # 登入密碼
+        userAccount = request.form['Account']   # 登入帳號
+        userPassword = request.form['Password'] # 登入密碼
     
     
         SQLIns = "SELECT * FROM MEMBER WHERE Account = '{0}' AND Password = '{1}' ".format(userAccount, userPassword)
@@ -95,6 +152,37 @@ def signIn():
     connect.close() 
     return 'signIn Page...'
     
+
+## 信箱認證
+
+@main.route("/verification", methods = ['GET','POST'])
+def verification():
+    connect = pymysql.connect(host = Config.DB_HOST, user = Config.DB_USER
+                          , password = Config.DB_PW, db = Config.DB_DB)
+    cursor = connect.cursor()
+    if request.method == 'POST':
+        userID = request.form['ID']
+        verificationCode = request.form['VerificationCode']
+        SQLIns = "UPDATE member SET VerificationStatus = '1' WHERE ID = '{0}' and VerificationCode = '{1}'"\
+                .format(userID, verificationCode)
+        try:
+            if(cursor.execute(SQLIns)):
+                t = {
+                        'state' : True           # state 表示 是否成功 
+                        }
+                connect.commit()
+                return jsonify(t)
+            else:
+                t = {
+                        'state' : False          # state 表示 是否成功 
+                        }
+                return jsonify(t)
+        except:
+	   # 如果发生错误则回滚
+           connect.rollback()
+           print("DB rollback")       
+    connect.close()       
+        
     
 ## 修改密碼
 ## 前端傳 帳號, 前密碼, 新密碼
