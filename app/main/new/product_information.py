@@ -92,7 +92,7 @@ def ProductInfo():
            t = {
                'state' : False              # state 表示 是否成功                
                }
-           return jsonify(t)           
+           com.append(t)          
         
         
        return jsonify(ans,com)
