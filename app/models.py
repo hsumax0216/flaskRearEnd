@@ -31,7 +31,7 @@ class member(db.Model):
 	AvgEv = db.Column(db.FLOAT)
 	TotalEvCount = db.Column(db.Integer)
 	VerificationCode = db.Column(db.VARCHAR(6),nullable=False)
-	VerificationStatus = db.Column(db.BOOL,nullable=False)
+	VerificationStatus = db.Column(db.Boolean,nullable=False)
 	
 	
 	def __repr__(self):
