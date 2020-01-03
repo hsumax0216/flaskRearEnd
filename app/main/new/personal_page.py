@@ -519,6 +519,11 @@ def reservation():
                         c.append(t1)
                     resJson.append(t)
                     resJson.append(c)
+                else:
+                    t = {
+                            'state' : False
+                            }
+                    resJson.append(t)
             return jsonify(resJson)       
         except Exception as e:
         #印出錯誤訊息
