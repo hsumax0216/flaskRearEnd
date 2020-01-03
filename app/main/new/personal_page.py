@@ -468,8 +468,8 @@ def surfedRecord():
     
 @main.route("/personalPage/reservation" , methods = ['GET','POST'])
 def reservation():
-    connect = pymysql.connect(host = Config.DB_HOST, user = Config.DB_USER
-                          , password = Config.DB_PW, db = Config.DB_DB)
+    connect = pymysql.connect(host = "140.121.197.131", user = "root"
+                          , password = "soselab401", db = "test")
     cursor = connect.cursor()     
     if request.method == 'POST':
         userID = request.form['ID']
@@ -508,12 +508,13 @@ def reservation():
                             'ProductImg' : dataProduct[1]
                             }
                     for info in dataComment:
-                        SQLIns6 = "SELECT NickName FROM member WHERE ID = '{0}'".format(info[1])
+                        SQLIns6 = "SELECT NickName, ImageURL FROM member WHERE ID = '{0}'".format(info[1])
                         cursor.execute(SQLIns6)
-                        CommenterName = cursor.fetchone()
+                        dataCommenter = cursor.fetchall()
                         t1 = {
                                 'Comment' : info[0],
-                                'CommenterName' : CommenterName[0]
+                                'CommenterName' : dataCommenter[0][0],
+                                'CommenterImageURL': dataCommenter[0][1]
                             }      
                         c.append(t1)
                     resJson.append(t)
