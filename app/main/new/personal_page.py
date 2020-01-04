@@ -16,7 +16,7 @@ def personalPage():
     if request.method == 'POST':
         userID = request.form['ID']
         SQLIns = "SELECT * FROM MEMBER WHERE ID = {0}".format(userID)
-        SQLIns2 = "SELECT ProductName, Price, LowestPrice, BiddingPrice, BiddingUnitPrice, BiddingDeadline FROM product WHERE SellerID = {0}".format(userID)
+        SQLIns2 = "SELECT ProductName, Price, LowestPrice, BiddingPrice, BiddingUnitPrice, BiddingDeadline, Information FROM product WHERE SellerID = {0}".format(userID)
 
        # 执行sql语句
         try:
@@ -53,7 +53,8 @@ def personalPage():
                             'LowestPrice' : rows[2],
                             'BiddingPrice' : rows[3],
                             'BiddingUnitPrice' : rows[4],
-                            'BiddingDeadLine' : rows[5]                                                            
+                            'BiddingDeadLine' : rows[5],
+                            'Information' : rows[6]                                            
                             }       
                     resProduct.append(t)
                 else:
@@ -81,7 +82,7 @@ def onSale():
     cursor = connect.cursor()
     if request.method == 'POST':
         userID = request.form['ID']
-        SQLIns = "SELECT ProductName, Price, LowestPrice, BiddingPrice, BiddingUnitPrice, BiddingDeadline FROM product WHERE SellerID = {0}".format(userID)
+        SQLIns = "SELECT ProductName, Price, LowestPrice, BiddingPrice, BiddingUnitPrice, BiddingDeadline, Information FROM product WHERE SellerID = {0}".format(userID)
         try:
             # 执行sql语句
             if(cursor.execute(SQLIns)):
@@ -96,19 +97,20 @@ def onSale():
                             'LowestPrice' : rows[2],
                             'BiddingPrice' : rows[3],
                             'BiddingUnitPrice' : rows[4],
-                            'BiddingDeadLine' : rows[5]                                                            
+                            'BiddingDeadLine' : rows[5],
+                            'Information' : rows[6]                                                            
                             }       
                     resJson.append(t)                                         
-                    return jsonify(resJson)
+                
                 else:
                     t = {
                             'state' : False              # state 表示 是否成功 
                             }
-                    return jsonify(t)
+                    resJson.append(t)
+                return jsonify(resJson)
         except Exception as e:
             #印出錯誤訊息
             print(e)
-            果发生错误则回滚
             connect.rollback()
             print("DB rollback")       
     connect.close()  
@@ -136,13 +138,20 @@ def sale():
             lowestPrice = request.form['LowestPrice']
             biddingPrice = request.form['BiddingPrice']
             biddingUnitPrice = request.form['BiddingUnitPrice']
-            biddingDeadline = (datetime.date.today() + datetime.timedelta(days=3))
+            biddingDeadline = (datetime.date.today() + datetime.timedelta(days=3))#request.form['BiddingDeadline']
+            print(biddingDeadline)
+            print(type(biddingDeadline))
 
         # biddingTopUser 前端不用傳，有人下標以後才會有資料
         SQLIns = "INSERT INTO product (SellerID, ProductName, ImageURL, Amount, Price, \
 LowestPrice, BiddingPrice, BiddingUnitPrice, BiddingDeadline, BiddingTopUserID, Information, Category, AvgEv, TotalEvCount,SurfedTimes) "
+        #如果直購價為空值
+        if(not price):
+            price = 'NULL'
+        else:
+            price = '\'{}\''.format(price)
         if(bidding):
-            SQLIns += "VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', NULL, '{9}', '{10}', '0', '0', '0')"\
+            SQLIns += "VALUES ('{0}', '{1}', '{2}', '{3}', {4}, '{5}', '{6}', '{7}', '{8}', NULL, '{9}', '{10}', '0', '0', '0')"\
                         .format(sellerID, productName, imageURL, amount, price, lowestPrice, biddingPrice, biddingUnitPrice, biddingDeadline, information, category)
         else:
             SQLIns += "VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', NULL, NULL, NULL, NULL, NULL, '{5}', '{6}', '0', '0', '0')"\
@@ -151,6 +160,7 @@ LowestPrice, BiddingPrice, BiddingUnitPrice, BiddingDeadline, BiddingTopUserID, 
         cursor.execute(SQLIns2)
         data = cursor.fetchone()
         productID = data[0]
+        #print(SQLIns)
         try:
             # 执行sql语句
             if(cursor.execute(SQLIns)):
@@ -168,7 +178,6 @@ LowestPrice, BiddingPrice, BiddingUnitPrice, BiddingDeadline, BiddingTopUserID, 
         except Exception as e:
            #印出錯誤訊息
           print(e)
-          #如果发生错误则回滚
           connect.rollback()
           print("DB rollback")       
     connect.close()   
@@ -427,10 +436,20 @@ def surfedRecord():
     cursor = connect.cursor()
     if request.method == 'POST':     
         userID = request.form['ID']        
+        
+        #確認時間
+        SQLIns2 = "DELETE FROM surfedrecord WHERE UserID = '{0}' AND TimeToLeaveDate < '{1}'".format(userID,datetime.datetime.today().replace(microsecond=0))
+        print(datetime.datetime.today().replace(microsecond=0))
+                
         SQLIns = "SELECT * FROM surfedrecord WHERE UserID = '{0}'".format(userID)
         resJson = []
         t = {}
         try:
+            if(cursor.execute(SQLIns2)):
+                print("success")
+                connect.commit()
+            else:
+                print("nothing to delete or failed")
             if(cursor.execute(SQLIns)):
                 data = cursor.fetchall()
                 
@@ -458,9 +477,8 @@ def surfedRecord():
         except Exception as e:
         #印出錯誤訊息
             print(e)
-	   # 如果发生错误则回滚
             connect.rollback()
-            print("DB rollback")       
+            print("DB rollback")     
     connect.close() 
     return 'personalPage surfedRecord...'
     
