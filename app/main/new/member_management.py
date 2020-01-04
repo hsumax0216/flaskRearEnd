@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 import pymysql
+import requests
 from .. import main
 from config import Config
 
@@ -193,7 +194,22 @@ def verification():
 	   # 如果发生错误则回滚
            connect.rollback()
            print("DB rollback")       
-    connect.close()       
+    connect.close()   
+
+
+## reCaptcha 驗證
+
+@main.route("/reCaptcha", methods = ['GET','POST'])
+def reCaptcha():
+    
+    if request.method == 'POST':
+        GRR = request.form['g-recaptcha-response']
+        postData = {
+                'secret' : '6LeSQswUAAAAAAd8y-XocbvoPrLyIvD6-vOrSVfk',
+                'response' : GRR
+                }
+        r = requests.post('https://www.google.com/recaptcha/api/siteverify', postData)
+        return r    
         
     
 ## 修改密碼
