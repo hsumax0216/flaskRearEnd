@@ -18,30 +18,30 @@ mail_pass="H125156743"   #口令
 
 ## 註冊
 
-@main.route("/signUp", methods = ['GET'])
+@main.route("/signUp", methods = ['GET', 'POST'])
 def signUp():
 
     connect = pymysql.connect(host = Config.DB_HOST, user = Config.DB_USER
                           , password = Config.DB_PW, db = Config.DB_DB)
     cursor = connect.cursor()
 
-  # GET 格式
-    userPhone = request.args.get("Phone")           #手機
-    userName = request.args.get("Name")             #姓名
-    userNickname = request.args.get("NickName")           #暱稱
-    userEmail = request.args.get("Email")           #信箱
-    userAccount = request.args.get("Account")       #帳號
-    userPassword = request.args.get("Password")     #密碼    
-    if(userPhone == None and userName == None and userNickname == None and userEmail == None and userAccount == None and userPassword == None):
-        t = {   
-                'state' : False                
-                }
-        return jsonify(t)
-    
-    #寄信
-    myslice = random.sample(code_list, 6) # 從list中隨機獲取6個元素，作為一個片斷返回
-    verification_code = ''.join(myslice) # list to string
-    mail_msg = """
+    if request.method == 'POST':
+        userPhone = request.form['Phone']               #手機
+        userName = request.form['Name']                 #姓名
+        userNickname = request.form['NickName']         #暱稱
+        userEmail = request.form['Email']           #信箱
+        userAccount = request.form['Account']       #帳號
+        userPassword = request.form['Password']     #密碼    
+        if(not userPhone or not userName or not userNickname or not userEmail or not userAccount or not userPassword):
+            t = {   
+                    'state' : False                
+                    }
+            return jsonify(t)
+        userEmail = userEmail + '@mail.ntou.edu.tw'
+        #寄信
+        myslice = random.sample(code_list, 6) # 從list中隨機獲取6個元素，作為一個片斷返回
+        verification_code = ''.join(myslice) # list to string
+        mail_msg = """
 <p>
 <br>
 感謝您註冊海大拍賣系統<br><br><br>
@@ -62,64 +62,62 @@ def signUp():
 <p><a href=https://www.itread01.com/study/python-email.html>https://www.itread01.com/study/python-email.html
 
 """.format(userNickname, userAccount, userPassword, verification_code)
-    sender = '00657002@mail.ntou.edu.tw'
-    receivers = [userEmail]
-    message = MIMEText(mail_msg, 'html', 'utf-8')
-    message['From'] = Header(sender, 'utf-8')
-    message['To'] =  Header(receivers[0], 'utf-8')
-    
-    subject = '感謝您註冊海大拍賣系統'
-    message['Subject'] = Header(subject, 'utf-8')
- 
- 
-
-
-    # 寫入database
+        sender = '00657002@mail.ntou.edu.tw'
+        receivers = [userEmail]
+        message = MIMEText(mail_msg, 'html', 'utf-8')
+        message['From'] = Header(sender, 'utf-8')
+        message['To'] =  Header(receivers[0], 'utf-8')
+        
+        subject = '感謝您註冊海大拍賣系統'
+        message['Subject'] = Header(subject, 'utf-8')
      
-    SQLIns = "INSERT INTO MEMBER (PhoneNumber, Name, NickName, Email, Account, Password, ImageURL, AvgEv, TotalEvCount, VerificationCode, VerificationStatus) VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', NULL, '0', '0', '{6}', '0')"\
-                  .format(userPhone, userName, userNickname, userEmail, userAccount, userPassword, verification_code)                
-    SQLIns2 = "SELECT * FROM member WHERE Account = '{0}'".format(userAccount)
+     
     
-    try:
-        cursor.execute(SQLIns2)
-        data = cursor.fetchone()
-        print(data)
-        if(data != None):
-            t = {
-                    'state' : False
-                    }
-            return jsonify(t)
-            
-        else:    
-            if(cursor.execute(SQLIns)):
+    
+        # 寫入database
+         
+        SQLIns = "INSERT INTO MEMBER (PhoneNumber, Name, NickName, Email, Account, Password, ImageURL, AvgEv, TotalEvCount, VerificationCode, VerificationStatus) VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', NULL, '0', '0', '{6}', '0')"\
+                      .format(userPhone, userName, userNickname, userEmail, userAccount, userPassword, verification_code)                
+        SQLIns2 = "SELECT * FROM member WHERE Account = '{0}'".format(userAccount)
+        
+        try:
+            cursor.execute(SQLIns2)
+            data = cursor.fetchone()
+            print(data)
+            if(data != None):
                 t = {
-                        'state' : True              # state 表示 是否成功 
+                        'state' : False
                         }
-                # 提交到数据库执行
-                connect.commit()
                 return jsonify(t)
-            else:
-                t = {
-                        'state' : False              # state 表示 是否成功 
-                        }
-                # 提交到数据库执行
-                return jsonify(t)		   
-    except Exception as e:
-    #印出錯誤訊息
-        print(e)
-	# 錯誤回滾
-        connect.rollback()
-        print("DB rollback")    
-        
-    try:
-        smtpObj = smtplib.SMTP() 
-        smtpObj.connect(mail_host, 25)    # 25 为 SMTP 端口号
-        smtpObj.login(mail_user,mail_pass)  
-        smtpObj.sendmail(sender, receivers, message.as_string())
-        print ("Success")
-    except smtplib.SMTPException:
-        print ("False")
-        
+                
+            else:    
+                if(cursor.execute(SQLIns)):
+                    try:
+                        smtpObj = smtplib.SMTP() 
+                        smtpObj.connect(mail_host, 25)    # 25 为 SMTP 端口号
+                        smtpObj.login(mail_user,mail_pass)  
+                        smtpObj.sendmail(sender, receivers, message.as_string())
+                        print ("Success")
+                    except smtplib.SMTPException:
+                        print ("False")
+                    t = {
+                            'state' : True              # state 表示 是否成功 
+                            }
+                    # 提交到数据库执行
+                    connect.commit()
+                    return jsonify(t)
+                else:
+                    t = {
+                            'state' : False              # state 表示 是否成功 
+                            }
+                    # 提交到数据库执行
+                    return jsonify(t)		   
+        except Exception as e:
+        #印出錯誤訊息
+            print(e)
+    	# 錯誤回滾
+            connect.rollback()
+            print("DB rollback")    
     connect.close() 
 
 ## 登入
