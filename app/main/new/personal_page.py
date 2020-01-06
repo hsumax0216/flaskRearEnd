@@ -572,9 +572,8 @@ def reservationComment():
     if request.method == 'POST':
         userID = request.form['ID']
         tradeID = request.form['TradeID']
-        productID = request.form['ProductID']
         information = request.form['Information']
-        SQLIns = "INSERT INTO comment(TradeID, ProductID, Information, CommentDateTime, CommenterID) VALUES('{0}', '{1}', '{2}', '{3}', '{4}')".format(tradeID, productID, information, datetime.date.today(),userID)
+        SQLIns = "INSERT INTO comment(TradeID, NULL, Information, CommentDateTime, CommenterID) VALUES('{0}', '{1}', '{2}', '{3}', '{4}')".format(tradeID, information, datetime.date.today(),userID)
         try :
             if(cursor.execute(SQLIns)):
                 t = {
@@ -589,8 +588,7 @@ def reservationComment():
         except Exception as e:
         #印出錯誤訊息
             print(e)
-	   # 如果发生错误则回滚
             connect.rollback()
             print("DB rollback")            
-    connect.close()  
+    connect.close()
     return 'personalPage reservation comment...'
