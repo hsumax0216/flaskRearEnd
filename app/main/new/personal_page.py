@@ -118,7 +118,6 @@ def onSale():
     connect.close()  
     return 'personalPage onSale...'
 
-
 #上架商品
 
 @main.route("/personalPage/onSale/sale", methods = ['GET','POST'])
@@ -140,10 +139,11 @@ def sale():
             lowestPrice = request.form['LowestPrice']
             biddingPrice = request.form['BiddingPrice']
             biddingUnitPrice = request.form['BiddingUnitPrice']
-            biddingDeadline = (datetime.date.today() + datetime.timedelta(days=3))#request.form['BiddingDeadline']
-            print(biddingDeadline)
-            print(type(biddingDeadline))
-
+            biddingDeadline = request.form['BiddingDeadline']
+            #mouth/day/year hour:min PM(AM)
+            biddingDeadline = datetime.datetime.strptime(biddingDeadline, "%m/%d/%Y %I:%M %p")
+            #print(biddingDeadline)
+            #print(type(biddingDeadline))
         # biddingTopUser 前端不用傳，有人下標以後才會有資料
         SQLIns = "INSERT INTO product (SellerID, ProductName, ImageURL, Amount, Price, \
 LowestPrice, BiddingPrice, BiddingUnitPrice, BiddingDeadline, BiddingTopUserID, Information, Category, AvgEv, TotalEvCount,SurfedTimes) "
