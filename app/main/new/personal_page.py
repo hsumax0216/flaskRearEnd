@@ -496,7 +496,7 @@ def reservation():
         
         resJson = []
         t = {}
-        t1 = {}
+        commentT = {}
         c = []
         try :
             if(cursor.execute(SQLIns)):
@@ -504,7 +504,8 @@ def reservation():
                 for rows in data:
                     c = []
                     t = {}
-                    t1 = {}
+                    commentT = {}
+                    t2 = {}
                     SQLIns2 = "SELECT Information, CommenterID FROM comment WHERE TradeID = '{0}'".format(rows[0])
                     cursor.execute(SQLIns2)
                     dataComment = cursor.fetchall()
@@ -532,14 +533,17 @@ def reservation():
                         cursor.execute(SQLIns6)
                         dataCommenter = cursor.fetchall()
                         
-                        t1 = {
-                                'Comment' : info[0],
+                        commentT = {
+                                'CommentInfo' : info[0],
                                 'CommenterName' : dataCommenter[0][0],
                                 'CommenterImageURL': dataCommenter[0][1]
                             }      
-                        c.append(t1)
-                    resJson.append(t)
-                    resJson.append(c)   
+                        c.append(commentT)
+                    t2 = {
+                            'Reservation': t,
+                            'Comment' : c                            
+                            }
+                    resJson.append(t2) 
     
             else:
                 t = {
