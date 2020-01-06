@@ -205,7 +205,7 @@ def reCaptcha():
     if request.method == 'POST':
         GRR = request.form['g-recaptcha-response']
         postData = {
-                'secret' : '6LeSQswUAAAAAAd8y-XocbvoPrLyIvD6-vOrSVfk',
+                'secret' : '6LeLqswUAAAAAJTcgX2Ppp3Xgqn-1oaUUiTYzcsI',
                 'response' : GRR
                 }
         r = requests.post('https://www.google.com/recaptcha/api/siteverify', postData)
