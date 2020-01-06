@@ -501,8 +501,10 @@ def reservation():
         try :
             if(cursor.execute(SQLIns)):
                 data = cursor.fetchall()
-                print(data)            
                 for rows in data:
+                    c = []
+                    t = {}
+                    t1 = {}
                     SQLIns2 = "SELECT Information, CommenterID FROM comment WHERE TradeID = '{0}'".format(rows[0])
                     cursor.execute(SQLIns2)
                     dataComment = cursor.fetchall()
@@ -529,6 +531,7 @@ def reservation():
                         SQLIns6 = "SELECT NickName, ImageURL FROM member WHERE ID = '{0}'".format(info[1])
                         cursor.execute(SQLIns6)
                         dataCommenter = cursor.fetchall()
+                        
                         t1 = {
                                 'Comment' : info[0],
                                 'CommenterName' : dataCommenter[0][0],
@@ -536,12 +539,13 @@ def reservation():
                             }      
                         c.append(t1)
                     resJson.append(t)
-                    resJson.append(c)
-                else:
-                    t = {
-                            'state' : False
-                            }
-                    resJson.append(t)
+                    resJson.append(c)   
+    
+            else:
+                t = {
+                        'state' : False
+                    }
+                resJson.append(t)
             return jsonify(resJson)       
         except Exception as e:
         #印出錯誤訊息
