@@ -28,8 +28,8 @@ class member(db.Model):
 	Account = db.Column(db.CHAR(40),nullable=False)
 	Password = db.Column(db.CHAR(16),nullable=False)
 	ImageURL = db.Column(db.VARCHAR(255))
-	AvgEv = db.Column(db.FLOAT)
-	TotalEvCount = db.Column(db.Integer)
+	AvgEv = db.Column(db.FLOAT,nullable=False,default=0)
+	TotalEvCount = db.Column(db.Integer,nullable=False,default=0)
 	VerificationCode = db.Column(db.VARCHAR(6),nullable=False)
 	VerificationStatus = db.Column(db.Boolean,nullable=False)
 	
@@ -52,8 +52,8 @@ class product(db.Model):
 	BiddingTopUserID = db.Column(db.Integer)
 	Information = db.Column(db.Text(255))
 	Category = db.Column(db.VARCHAR(255),nullable=False)
-	AvgEv = db.Column(db.FLOAT)
-	TotalEvCount = db.Column(db.Integer)
+	AvgEv = db.Column(db.FLOAT,nullable=False,default=0)
+	TotalEvCount = db.Column(db.Integer,nullable=False,default=0)
 	SurfedTimes = db.Column(db.Integer,nullable=False,default=0)
 	
 	def __repr__(self):
@@ -109,7 +109,7 @@ class comment(db.Model):
 	_tablename_ = 'comment'
 	CommentID = db.Column(db.Integer,nullable=False,primary_key=True,autoincrement=True)
 	TradeID = db.Column(db.Integer,db.ForeignKey('trade.TradeID'))
-	ProductID = db.Column(db.Integer,db.ForeignKey('product.ProductID'),nullable=False)
+	ProductID = db.Column(db.Integer,db.ForeignKey('product.ProductID'))
 	CommenterID = db.Column(db.Integer,db.ForeignKey('member.ID'))
 	Information = db.Column(db.Text(255))
 	CommentDatetime = db.Column(db.DateTime,nullable=False)
