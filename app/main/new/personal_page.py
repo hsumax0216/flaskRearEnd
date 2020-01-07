@@ -573,7 +573,7 @@ def reservationComment():
         userID = request.form['ID']
         tradeID = request.form['TradeID']
         information = request.form['Information']
-        SQLIns = "INSERT INTO comment(TradeID, NULL, Information, CommentDateTime, CommenterID) VALUES('{0}', '{1}', '{2}', '{3}', '{4}')".format(tradeID, information, datetime.date.today(),userID)
+        SQLIns = "INSERT INTO comment(TradeID, ProductID, Information, CommentDateTime, CommenterID) VALUES('{0}', NULL, '{1}', '{2}', '{3}')".format(tradeID, information, datetime.date.today(),userID)
         try :
             if(cursor.execute(SQLIns)):
                 t = {
