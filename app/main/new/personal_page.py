@@ -16,7 +16,7 @@ def personalPage():
     if request.method == 'POST':
         userID = request.form['ID']
         SQLIns = "SELECT * FROM MEMBER WHERE ID = {0}".format(userID)
-        SQLIns2 = "SELECT ProductName, Price, LowestPrice, BiddingPrice, BiddingUnitPrice, BiddingDeadline, Information, ProductID FROM product WHERE SellerID = {0}".format(userID)
+        SQLIns2 = "SELECT ProductName, Price, LowestPrice, BiddingPrice, BiddingUnitPrice, BiddingDeadline FROM product WHERE SellerID = {0} AND Amount > 0".format(userID)
 
        # 执行sql语句
         try:
@@ -53,9 +53,7 @@ def personalPage():
                             'LowestPrice' : rows[2],
                             'BiddingPrice' : rows[3],
                             'BiddingUnitPrice' : rows[4],
-                            'BiddingDeadLine' : rows[5],
-                            'Information' : rows[6],
-                            'ProductID' : rows[7]                                         
+                            'BiddingDeadLine' : rows[5]                                                            
                             }       
                     resProduct.append(t)
                 else:
@@ -83,13 +81,13 @@ def onSale():
     cursor = connect.cursor()
     if request.method == 'POST':
         userID = request.form['ID']
-        SQLIns ="SELECT ProductName, Price, LowestPrice, BiddingPrice, BiddingUnitPrice, BiddingDeadline, Information, ProductID FROM product WHERE SellerID = {0}".format(userID)
-        try:
+        SQLIns = "SELECT ProductName, Price, LowestPrice, BiddingPrice, BiddingUnitPrice, BiddingDeadline, Information, ProductID FROM product WHERE SellerID = {0} AND Amount > 0".format(userID)
+        try:            
+            resJson = []
+            t = {}
             # 执行sql语句
             if(cursor.execute(SQLIns)):
                 data = cursor.fetchall()
-                resJson = []
-                t = {}
                 for rows in data:                   
                     t  =  {       
                             'state' : True,                            
@@ -100,16 +98,15 @@ def onSale():
                             'BiddingUnitPrice' : rows[4],
                             'BiddingDeadLine' : rows[5],
                             'Information' : rows[6],
-                            'ProductID' : rows[7]                                                      
+                            'ProductID' : rows[7]                                             
                             }       
-                    resJson.append(t)                                         
-                
-                else:
-                    t = {
-                            'state' : False              # state 表示 是否成功 
-                            }
-                    resJson.append(t)
-                return jsonify(resJson)
+                    resJson.append(t)  
+            else:
+                t = {
+                        'state' : False              # state 表示 是否成功 
+                        }
+                resJson.append(t)
+            return jsonify(resJson)
         except Exception as e:
             #印出錯誤訊息
             print(e)
