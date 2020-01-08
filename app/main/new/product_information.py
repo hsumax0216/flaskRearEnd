@@ -209,36 +209,68 @@ def add_surfing_record():
                if(not cursor.execute(SQLIns)):         #要是沒資料則進入  代表無此瀏覽資料
                    SQLIns = "SELECT * FROM product WHERE ProductID = {0}".format(ProductID)
                    if(cursor.execute(SQLIns)):         #有商品但無瀏覽資料
+                       
                        data = cursor.fetchone()
-                       if(data is not None):
+                       if(data):
                            ProductName= data[2]
+                           if(ProductName==None):
+                               ProductName='NULL'
+                               
                            ImageURL= data[3]
+                           if(ImageURL==None):
+                               ImageURL='NULL'
+                               
                            Price= data[5]
+                           if(Price=='None'):
+                               Price='NULL'
+                               
                            LowestPrice= data[6]
+                           if(LowestPrice==None):
+                               LowestPrice='NULL'
+                               
                            BiddingPrice= data[7]
+                           if(BiddingPrice==None):
+                               BiddingPrice='NULL'
+                               
                            BiddingUnitPrice= data[8]
-                           BiddingDeadline= data[9]
+                           if(BiddingUnitPrice==None):
+                               BiddingUnitPrice='NULL'                                                          
+                               
                            timenow=datetime.datetime.today().replace(microsecond=0)
                            dtime=datetime.datetime.today().replace(microsecond=0)+datetime.timedelta(days=20)
-
-                           SQLIns = "INSERT INTO surfedrecord (UserID, ProductID, ProductName,ImageURL,Price,LowestPrice,BiddingPrice,BiddingUnitPrice,BiddingDeadline,SurfingDate,TimeToLeaveDate)\
+                           
+                           BiddingDeadline= data[9]
+                           if(BiddingDeadline==None):
+                               BiddingDeadline='NULL'
+                               SQLIns = "INSERT INTO surfedrecord (UserID, ProductID, ProductName,ImageURL,Price,LowestPrice,BiddingPrice,BiddingUnitPrice,BiddingDeadline,SurfingDate,TimeToLeaveDate)\
+                                     VALUES ({0},{1},'{2}','{3}',{4},{5},{6},{7},{8},'{9}','{10}');".format(UserID,ProductID,ProductName,ImageURL,Price,LowestPrice,BiddingPrice,BiddingUnitPrice,BiddingDeadline,\
+                                     timenow,dtime)
+                           else:
+                               SQLIns = "INSERT INTO surfedrecord (UserID, ProductID, ProductName,ImageURL,Price,LowestPrice,BiddingPrice,BiddingUnitPrice,BiddingDeadline,SurfingDate,TimeToLeaveDate)\
                                      VALUES ({0},{1},'{2}','{3}',{4},{5},{6},{7},'{8}','{9}','{10}');".format(UserID,ProductID,ProductName,ImageURL,Price,LowestPrice,BiddingPrice,BiddingUnitPrice,BiddingDeadline,\
                                      timenow,dtime)
-                           #print(cursor.execute(SQLIns))
+                           
+                           
+                           #print(SQLIns)
                            if(not cursor.execute(SQLIns)):
+                                print("failed C")
                                 t = {
                                         'state' : False              # state 表示 是否成功 
                                     }
                            
                                 return jsonify(t)
-                           
+                           else:
+                               connect.commit()
+                               return "successfully insert surfing record"
                        else:
+                           print("failed A")
                            t = {
                                'state' : False              # state 表示 是否成功 
                                }
                            
                            return jsonify(t)
                    else:                                    #表示無此商品
+                       print("failed B")
                        t = {
                            'state' : False              # state 表示 是否成功 
                            }
@@ -248,21 +280,47 @@ def add_surfing_record():
                    
                    if(cursor.execute(SQLIns)):         
                        data = cursor.fetchone()
-                       if(data is not None):
+                       if(data):
                            
                                                       
                            ProductName= data[2]
+                           if(ProductName==None):
+                               ProductName='NULL'
+                               
                            ImageURL= data[3]
+                           if(ImageURL==None):
+                               ImageURL='NULL'
+                               
                            Price= data[5]
+                           if(Price=='None'):
+                               Price='NULL'
+                               
                            LowestPrice= data[6]
+                           if(LowestPrice==None):
+                               LowestPrice='NULL'
+                               
                            BiddingPrice= data[7]
+                           if(BiddingPrice==None):
+                               BiddingPrice='NULL'
+                               
                            BiddingUnitPrice= data[8]
+                           if(BiddingUnitPrice==None):
+                               BiddingUnitPrice='NULL'
+                               
                            BiddingDeadline= data[9]
-                           
-                           SQLIns = "UPDATE surfedrecord\
+                           if(BiddingDeadline==None):
+                               BiddingDeadline='NULL'
+                               SQLIns = "UPDATE surfedrecord\
+                                    SET ProductName='{2}',ImageURL='{3}',Price={4},LowestPrice={5},BiddingPrice={6},BiddingUnitPrice={7},BiddingDeadline={8},SurfingDate='{9}',TimeToLeaveDate='{10}'\
+                                    WHERE UserID={0} AND ProductID={1};".format(UserID,ProductID,ProductName,ImageURL,Price,LowestPrice,BiddingPrice,BiddingUnitPrice,BiddingDeadline,\
+                                    datetime.datetime.today().replace(microsecond=0),datetime.datetime.today().replace(microsecond=0)+datetime.timedelta(days=20))
+                           else:
+                               SQLIns = "UPDATE surfedrecord\
                                     SET ProductName='{2}',ImageURL='{3}',Price={4},LowestPrice={5},BiddingPrice={6},BiddingUnitPrice={7},BiddingDeadline='{8}',SurfingDate='{9}',TimeToLeaveDate='{10}'\
                                     WHERE UserID={0} AND ProductID={1};".format(UserID,ProductID,ProductName,ImageURL,Price,LowestPrice,BiddingPrice,BiddingUnitPrice,BiddingDeadline,\
                                     datetime.datetime.today().replace(microsecond=0),datetime.datetime.today().replace(microsecond=0)+datetime.timedelta(days=20))
+                           
+                           
                            if(not cursor.execute(SQLIns)):
                                 t = {
                                         'state' : False              # state 表示 是否成功 
@@ -292,7 +350,7 @@ def add_surfing_record():
                print(e)
                connect.rollback()     
     connect.close()
-    return 'product_information ProductID={}...'.format(ProductID)
+    return 'product_information'
 
 
 
