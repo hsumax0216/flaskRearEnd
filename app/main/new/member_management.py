@@ -34,19 +34,19 @@ def signUp():
         userAccount = request.form['Account']       #帳號
         userPassword = request.form['Password']     #密碼  
         GRR = request.form['g-recaptcha-response']
-        """postData = {
+        postData = {
                 'secret' : '6LdhqswUAAAAAHV6Bgd6fCtncxole_mXTps5cC0D',
                 'response' : GRR
                 }
         r = requests.post('https://www.google.com/recaptcha/api/siteverify', postData)
-        j = json.loads(r.text)"""
+        j = json.loads(r.text)
 
-        if(not userPhone or not userName or not userNickname or not userEmail or not userAccount or not userPassword ):#or j['success'] == False):
+        if(not userPhone or not userName or not userNickname or not userEmail or not userAccount or not userPassword or j['success'] == False):
             t = {   
                     'state' : False                
                     }
             return jsonify(t)
-        if(True):#j['success'] == True):
+        if(j['success'] == True):
             userEmail = userEmail + '@mail.ntou.edu.tw'
             #寄信
             myslice = random.sample(code_list, 6) # 從list中隨機獲取6個元素，作為一個片斷返回
