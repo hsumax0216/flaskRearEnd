@@ -16,7 +16,7 @@ def personalPage():
     if request.method == 'POST':
         userID = request.form['ID']
         SQLIns = "SELECT * FROM MEMBER WHERE ID = {0}".format(userID)
-        SQLIns2 = "SELECT ProductName, Price, LowestPrice, BiddingPrice, BiddingUnitPrice, BiddingDeadline FROM product WHERE SellerID = {0} AND Amount > 0".format(userID)
+        SQLIns2 = "SELECT ProductName, Price, LowestPrice, BiddingPrice, BiddingUnitPrice, BiddingDeadline, Information, ProductID FROM product WHERE SellerID = {0} AND Amount > 0".format(userID)
 
        # 执行sql语句
         try:
@@ -53,7 +53,9 @@ def personalPage():
                             'LowestPrice' : rows[2],
                             'BiddingPrice' : rows[3],
                             'BiddingUnitPrice' : rows[4],
-                            'BiddingDeadLine' : rows[5]                                                            
+                            'BiddingDeadLine' : rows[5],
+                            'Information' : rows[6],
+                            'ProductID' : rows[7]                                                            
                             }       
                     resProduct.append(t)
             else:
