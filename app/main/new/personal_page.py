@@ -56,11 +56,11 @@ def personalPage():
                             'BiddingDeadLine' : rows[5]                                                            
                             }       
                     resProduct.append(t)
-                else:
-                    t = {
-                            'state' : False              # state 表示 是否成功 
-                            }
-                    resProduct.append(t)
+            else:
+                t = {
+                        'state' : False              # state 表示 是否成功 
+                        }
+                resProduct.append(t)
             
             resJson.append(resProduct)
             resJson.append(resPersonal)
