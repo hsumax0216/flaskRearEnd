@@ -205,38 +205,36 @@ def verification():
     return 'verification Page..'
         
     
-## 修改密碼
-## 前端傳 帳號, 前密碼, 新密碼
-## 後端根據帳號和前密碼去尋找，要更改的會員是誰，並且改密碼
-"""
-@app.route("/changePassword", methods = ['GET','POST'])
-def changePassword():
-    connect = pymysql.connect(host = "140.121.197.131", "port = 3306", user = "root"
-                          , password = "soselab401", db = "test")
+## 修改圖片
+
+@main.route("/changeImage", methods = ['GET','POST'])
+def changeImage():
+    connect = pymysql.connect(host = Config.DB_HOST, user = Config.DB_USER
+                          , password = Config.DB_PW, db = Config.DB_DB)
     cursor = connect.cursor()
-    userAccount = request.form['account']
-    userOldPassword = request.form['oldPassword']
-    userNewPassword = request.form['newPassword']
-    print(userNewPassword)
-    SQLIns = "UPDATE MEMBER SET Password = '{0}' WHERE Account = '{1}' AND Password = '{2}' "\
-            .format(userNewPassword, userAccount, userOldPassword)
-    try:
-        # 执行sql语句
-       if(cursor.execute(SQLIns)):
-           t = {
-               'state' : True           # state 表示 是否成功 
-               }
-           connect.commit()
-           return jsonify(t)
-       else:
-           t = {
-               'state' : False          # state 表示 是否成功 
-               }
-           return jsonify(t)
-    except:
-	   # 如果发生错误则回滚
-       connect.rollback()
-       print("DB rollback")       
-    connect.close()       
+    if request.method == 'POST':
+        print(request.form)
+        userID = request.form['ID']
+        userNewImage = request.form['NewImageURL']
     
-"""
+        SQLIns = "UPDATE member SET ImageURL = '{0}' WHERE ID = '{1}' "\
+                .format(userNewImage, userID)
+        try:
+            # 执行sql语句
+           if(cursor.execute(SQLIns)):
+               t = {
+                   'state' : True           # state 表示 是否成功 
+                   }
+               connect.commit()
+               return jsonify(t)
+           else:
+               t = {
+                   'state' : False          # state 表示 是否成功 
+                   }
+               return jsonify(t)
+        except Exception as e:
+            
+            print(e)
+            connect.rollback()
+            print("DB rollback")       
+    connect.close()
