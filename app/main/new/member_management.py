@@ -33,7 +33,7 @@ def signUp():
         userEmail = request.form['Email']           #信箱
         userAccount = request.form['Account']       #帳號
         userPassword = request.form['Password']     #密碼
-	userImage = request.form['ImageURL']     #頭貼 
+        userImage = request.form['ImageURL']#頭貼
         GRR = request.form['g-recaptcha-response']
         postData = {
                 'secret' : '6LdhqswUAAAAAHV6Bgd6fCtncxole_mXTps5cC0D',
