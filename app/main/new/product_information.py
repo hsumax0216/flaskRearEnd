@@ -101,7 +101,7 @@ def ProductInfo():
        print(e)
        connect.rollback()     
     connect.close()
-    return 'product_information ProductID={}...'.format(ProductID)
+    return 'product_information '
 
 #留言
 @main.route("/product_comment", methods = ['GET','POST'])
@@ -147,7 +147,7 @@ def Productcomment():
                }
            return jsonify(t)
        #確認有商品資料
-        SQLIns ="INSERT INTO comment(TradeID, ProductID, Information, CommentDateTime,UserID) VALUES(NULL,{0},'{1}', '{2}', '{3}')".format( ProductID, Information, datetime.date.today(),UserID)
+        SQLIns ="INSERT INTO comment(TradeID, ProductID, Information, CommentDateTime,CommenterID) VALUES(NULL,{0},'{1}', '{2}', '{3}')".format( ProductID, Information, datetime.date.today(),UserID)
         #print("BBBBBBBBBBBBB")
         try:
             #print("AAAAAAAAAAAA")
