@@ -32,7 +32,8 @@ def signUp():
         userNickname = request.form['NickName']         #暱稱
         userEmail = request.form['Email']           #信箱
         userAccount = request.form['Account']       #帳號
-        userPassword = request.form['Password']     #密碼  
+        userPassword = request.form['Password']     #密碼
+	userImage = request.form['ImageURL']     #頭貼 
         GRR = request.form['g-recaptcha-response']
         postData = {
                 'secret' : '6LdhqswUAAAAAHV6Bgd6fCtncxole_mXTps5cC0D',
@@ -82,8 +83,8 @@ def signUp():
         
             # 寫入database
              
-            SQLIns = "INSERT INTO MEMBER (PhoneNumber, Name, NickName, Email, Account, Password, ImageURL, AvgEv, TotalEvCount, VerificationCode, VerificationStatus) VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', NULL, '0', '0', '{6}', '0')"\
-                          .format(userPhone, userName, userNickname, userEmail, userAccount, userPassword, verification_code)                
+            SQLIns = "INSERT INTO MEMBER (PhoneNumber, Name, NickName, Email, Account, Password, ImageURL, AvgEv, TotalEvCount, VerificationCode, VerificationStatus) VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{7}', '0', '0', '{6}', '0')"\
+                          .format(userPhone, userName, userNickname, userEmail, userAccount, userPassword, verification_code,userImage)#增加頭貼userImage{7}        
             SQLIns2 = "SELECT * FROM member WHERE Account = '{0}'".format(userAccount)
             
             try:
