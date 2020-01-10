@@ -263,7 +263,7 @@ def onTrade():
     #, TradeAmount, TradePrice, CompletedType
         SQLIns1 = "SELECT TradeID, ProductName, TradeAmount, TradePrice FROM product, trade WHERE trade.SellerID = '{0}' AND trade.ProductID = product.ProductID AND CompletedType = 0"\
                     .format(userID)
-        SQLIns2 = "SELECT ProductName, TradeAmount, TradePrice FROM product, trade WHERE trade.BuyerID = '{0}' AND trade.ProductID = product.ProductID AND CompletedType = 0"\
+        SQLIns2 = "SELECT ProductName, TradeAmount, TradePrice, TradeID FROM product, trade WHERE trade.BuyerID = '{0}' AND trade.ProductID = product.ProductID AND CompletedType = 0"\
                     .format(userID)
         try:
        # 执行sql语句
@@ -288,7 +288,7 @@ def onTrade():
                for rows in data2:
                    t = {
                            'state' : True, 
-                           'TradeID' : rows[0],
+                           'TradeID' : rows[3],
                            'ProductName' : rows[0],
                            'TradeAmount' : rows[1],
                            'TradePrice' : rows[2],                                                          
