@@ -100,31 +100,41 @@ def BiddingInfo():
 			ans = []
 			for bd in bid:
 				PD = product.query.filter_by(ProductID = bd.ProductID).first()
-				temp = {					
-				# state 表示 是否成功
-				#IsGEthanLowestPrice #is greater or equal than LowestPrice
-				'state' : True ,\
-				'OverBidTime' : (PD.BiddingDeadline < nowtime),\
-				'IsTheBiddingTopUserID' : (PD.BiddingTopUserID == int(mbID)),\
-				'IsGEthanLowestPrice' : (PD.BiddingPrice >= PD.LowestPrice),\
-				'ProductID' : PD.ProductID,\
-				'SellerID' : PD.SellerID,\
-				'ProductName' : PD.ProductName,\
-				'ImageURL' : PD.ImageURL,\
-				'Amount' : PD.Amount,\
-				'Price' : PD.Price,\
-				'LowestPrice' : PD.LowestPrice,\
-				'BiddingPrice' : PD.BiddingPrice,\
-				'BiddingUnitPrice' : PD.BiddingUnitPrice,\
-				'BiddingDeadline' : PD.BiddingDeadline,\
-				'BiddingTopUserID' : PD.BiddingTopUserID,\
-				'Information' : PD.Information,\
-				'Category' : PD.Category,\
-				'AvgEv' : PD.AvgEv,\
-				'TotalEvCount' : PD.TotalEvCount,\
-				'SurfedTimes' : PD.SurfedTimes
-				}
-				ans.append(temp)
+				if(PD is None):
+					temp = {
+					'state' : False,\
+					'ProductID' : bd.ProductID
+					}
+				else:
+					topusername = 'NULL'
+					topuser = member.query.filter_by(ID = PD.BiddingTopUserID).first()
+					if(topuser is not None):
+						topusername = topuser.NickName
+					temp = {					
+					# state 表示 是否成功
+					#IsGEthanLowestPrice #is greater or equal than LowestPrice
+					'state' : True ,\
+					'OverBidTime' : (PD.BiddingDeadline < nowtime),\
+					'IsTheBiddingTopUserID' : (PD.BiddingTopUserID == int(mbID)),\
+					'IsGEthanLowestPrice' : (PD.BiddingPrice >= PD.LowestPrice),\
+					'ProductID' : PD.ProductID,\
+					'SellerID' : PD.SellerID,\
+					'ProductName' : PD.ProductName,\
+					'ImageURL' : PD.ImageURL,\
+					'Amount' : PD.Amount,\
+					'Price' : PD.Price,\
+					'LowestPrice' : PD.LowestPrice,\
+					'BiddingPrice' : PD.BiddingPrice,\
+					'BiddingUnitPrice' : PD.BiddingUnitPrice,\
+					'BiddingDeadline' : PD.BiddingDeadline,\
+					'BiddingTopUserID' : topusername,\
+					'Information' : PD.Information,\
+					'Category' : PD.Category,\
+					'AvgEv' : PD.AvgEv,\
+					'TotalEvCount' : PD.TotalEvCount,\
+					'SurfedTimes' : PD.SurfedTimes
+					}
+					ans.append(temp)
 			return jsonify(ans)
 		except Exception as e:
 			print(e)

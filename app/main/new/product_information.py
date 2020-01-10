@@ -11,6 +11,7 @@ def ProductInfo():
                           , password = Config.DB_PW, db = Config.DB_DB)
     cursor = connect.cursor()
     cursor2= connect.cursor()
+    cursor3= connect.cursor()
     ProductID =request.args.get('ProductID')
     if(not ProductID):
         t = {
@@ -31,13 +32,23 @@ def ProductInfo():
            data = cursor.fetchone()
            
            while data is not None:
-               SQLIns2 = "SELECT NickName,ImageURL FROM member WHERE ID = {0}".format(data[1])
-               cursor2.execute(SQLIns2)
-               data2=cursor2.fetchone()
-               if (data2 is not None):
+                SQLIns2 = "SELECT NickName,ImageURL FROM member WHERE ID = {0}".format(data[1])
+                cursor2.execute(SQLIns2)
+                biddingTUser=0
+                biddingTUserName='NULL'
+                data2=cursor2.fetchone()
+                if (data2 is not None):
+                    print(data[10])
+                    if (data[10]):
+                        biddingTUser=data[10]
+                        SQLIns3 = "SELECT NickName FROM member WHERE ID = {0}".format(biddingTUser)
+                        cursor3.execute(SQLIns3)
+                        data3=cursor3.fetchone()
+                        print(data3[0])
+                        biddingTUserName=data3[0]
              #  print(data)
              #  print()
-                   t = {
+                    t = {
                        'state' : True ,
                        'ProductID' : data[0],              # state 表示 是否成功 
                        'SellerID' : data[1],
@@ -49,7 +60,7 @@ def ProductInfo():
                        'BiddingPrice' : data[7],
                        'BiddingUnitPrice' : data[8],
                        'BiddingDeadline' : data[9],
-                       'BiddingTopUserID' : data[10],
+                       'BiddingTopUserID' : biddingTUserName,
                        'Information' : data[11],
                        'Category' : data[12],
                        'AvgEv':data[13],
@@ -58,8 +69,8 @@ def ProductInfo():
                        'SellerNickName':data2[0],
                        'SellerImageURL':data2[1]
                        }
-                   ans.append(t)
-               data = cursor.fetchone()
+                    ans.append(t)
+                data = cursor.fetchone()
        else:
            t = {
                'state' : False              # state 表示 是否成功                
